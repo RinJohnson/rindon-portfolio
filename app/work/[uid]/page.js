@@ -5,7 +5,6 @@ import { PrismicRichText } from '@prismicio/react'
 import { client } from '../../../prismicio'
 import Navigation from '../../../components/Navigation'
 import CursorTracker from '../../../components/CursorTracker'
-import Lightbox from '../../../components/Lightbox'
 
 export async function generateStaticParams() {
   const works = await client.getAllByType('work_item')
@@ -18,16 +17,6 @@ export default async function WorkPage({ params }) {
   try {
     const work = await client.getByUID('work_item', uid)
     const allWorks = await client.getAllByType('work_item')
-
-    // Extract images for the Lightbox
-    const galleryImages = []
-    if (work.data.body && Array.isArray(work.data.body)) {
-      work.data.body.forEach(slice => {
-        if (slice.slice_type === 'image' && slice.primary?.image?.url) {
-          galleryImages.push(slice.primary.image)
-        }
-      })
-    }
 
     const title = work.data.project_title 
       ? asText(work.data.project_title)
@@ -56,7 +45,7 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
-          {/* Render body slices - images shown here, not in Lightbox */}
+          {/* Render all body slices in order: images, videos, text */}
           {work.data.body && Array.isArray(work.data.body) && work.data.body.length > 0 && (
             <div className="project-content">
               {work.data.body.map((slice, index) => {
@@ -68,13 +57,17 @@ export default async function WorkPage({ params }) {
                     : ''
                   
                   return (
-                    <div key={`slice-${index}`}>
+                    <div key={`image-${index}`}>
                       <div className="project-image">
                         <img
                           src={slice.primary.image.url}
                           alt={slice.primary.image.alt || caption || ''}
-                          className="gallery-item"
-                          data-index={index}
+                          style={{
+                            maxWidth: '100%',
+                            height: 'auto',
+                            objectFit: 'contain',
+                            display: 'block'
+                          }}
                         />
                       </div>
                       {caption && (
@@ -85,21 +78,19 @@ export default async function WorkPage({ params }) {
                 }
                 
                 // VIDEO SLICES
-                if (slice.slice_type === 'video') {
-                  const hasEmbed = slice.primary?.embed_url
-                  const embedHtml = slice.primary?.html
-                  
+                if (slice.slice_type === 'video' && slice.primary?.embed_url) {
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
                     ? asText(slice.primary.caption)
                     : ''
                   
-                  if (hasEmbed && embedHtml) {
+                  // Prismic provides the embed HTML
+                  if (slice.primary.html) {
                     return (
-                      <div key={`slice-${index}`}>
+                      <div key={`video-${index}`}>
                         <div className="project-video-container">
                           <div 
                             className="video-responsive"
-                            dangerouslySetInnerHTML={{ __html: embedHtml }}
+                            dangerouslySetInnerHTML={{ __html: slice.primary.html }}
                           />
                         </div>
                         {caption && (
@@ -108,14 +99,13 @@ export default async function WorkPage({ params }) {
                       </div>
                     )
                   }
-                  
                   return null
                 }
                 
                 // TEXT SLICES
                 if (slice.slice_type === 'text' && slice.primary?.text && Array.isArray(slice.primary.text) && slice.primary.text.length > 0) {
                   return (
-                    <div key={`slice-${index}`} className="project-text-block">
+                    <div key={`text-${index}`} className="project-text-block">
                       <PrismicRichText field={slice.primary.text} />
                     </div>
                   )
@@ -125,9 +115,6 @@ export default async function WorkPage({ params }) {
               })}
             </div>
           )}
-
-          {/* Lightbox component for click-to-enlarge */}
-          {galleryImages.length > 0 && <Lightbox images={galleryImages} />}
         </main>
       </>
     )
