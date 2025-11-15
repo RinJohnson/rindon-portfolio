@@ -26,21 +26,6 @@ export default async function WorkPage({ params }) {
       ? new Date(work.data.project_date).getFullYear()
       : ''
 
-    // DEBUG: Log all slices to console
-    console.log('=== ALL SLICES FOR:', title, '===')
-    if (work.data.body && Array.isArray(work.data.body)) {
-      work.data.body.forEach((slice, index) => {
-        console.log(`Slice ${index}:`, {
-          slice_type: slice.slice_type,
-          primary: slice.primary,
-          hasEmbedUrl: !!slice.primary?.embed_url,
-          hasHtml: !!slice.primary?.html,
-          embedUrl: slice.primary?.embed_url,
-          htmlPreview: slice.primary?.html ? slice.primary.html.substring(0, 100) : null
-        })
-      })
-    }
-
     return (
       <>
         <Navigation shows={allWorks} works={allWorks} />
@@ -60,28 +45,7 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
-          {/* DEBUG OUTPUT - Shows what slices we have */}
-          <div style={{ padding: '30px', background: '#f0f0f0', margin: '20px' }}>
-            <h3>DEBUG: Slices Found</h3>
-            {work.data.body && Array.isArray(work.data.body) && (
-              <ul>
-                {work.data.body.map((slice, index) => (
-                  <li key={index}>
-                    <strong>Slice {index}:</strong> {slice.slice_type}
-                    {slice.slice_type === 'video' && (
-                      <div style={{ marginLeft: '20px', fontSize: '12px' }}>
-                        <div>Has embed_url: {slice.primary?.embed_url ? 'YES' : 'NO'}</div>
-                        <div>Has html: {slice.primary?.html ? 'YES' : 'NO'}</div>
-                        {slice.primary?.embed_url && <div>URL: {slice.primary.embed_url}</div>}
-                      </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          {/* Render all body slices */}
+          {/* Render all body slices in order */}
           {work.data.body && Array.isArray(work.data.body) && work.data.body.length > 0 && (
             <div className="project-content">
               {work.data.body.map((slice, index) => {
@@ -113,14 +77,14 @@ export default async function WorkPage({ params }) {
                   )
                 }
                 
-                // VIDEO SLICES - Try all possible field names
-                if (slice.slice_type === 'video') {
+                // VIDEO SLICES - The embed is in slice.primary.embed.html
+                if (slice.slice_type === 'video' && slice.primary?.embed) {
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
                     ? asText(slice.primary.caption)
                     : ''
                   
-                  // Try different possible field names
-                  const embedHtml = slice.primary?.html || slice.primary?.embed_html || slice.primary?.video_embed
+                  // The embed field contains: { html, embed_url, provider_name, etc }
+                  const embedHtml = slice.primary.embed.html
                   
                   if (embedHtml) {
                     return (
@@ -136,16 +100,8 @@ export default async function WorkPage({ params }) {
                         )}
                       </div>
                     )
-                  } else {
-                    // Show placeholder if no embed HTML found
-                    return (
-                      <div key={`video-${index}`} style={{ padding: '30px', background: '#ffcccc', margin: '20px' }}>
-                        <p><strong>Video slice found but no embed HTML</strong></p>
-                        <p>embed_url: {slice.primary?.embed_url || 'none'}</p>
-                        <p>Available fields: {Object.keys(slice.primary || {}).join(', ')}</p>
-                      </div>
-                    )
                   }
+                  return null
                 }
                 
                 // TEXT SLICES
