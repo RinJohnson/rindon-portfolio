@@ -538,10 +538,7 @@ padding-left: 30px;
   font-weight: 300 !important;
   line-height: 1.6 !important;
 }
-* ========================================
-   VIDEO EMBEDS (Vimeo/YouTube)
-   ======================================== */
-
+/* Video embeds - Vimeo/YouTube */
 .project-video-container {
   width: 100vw;
   margin-left: calc(-50vw + 50%);
@@ -555,7 +552,7 @@ padding-left: 30px;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
   background: #000;
@@ -573,25 +570,33 @@ padding-left: 30px;
   border: 0;
 }
 
-/* Text blocks between media */
+/* Image captions - constrained width like intro text */
+.image-caption {
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.7;
+  margin: 15px 30px 60px 30px;
+  max-width: 600px;
+}
+
+/* Text blocks between media - restore padding */
 .project-text-block {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 0 30px;
+  max-width: 600px;
+  margin: 40px 30px;
+  padding: 0;
   font-size: 14px;
   line-height: 1.6;
 }
 
-/* Fix for images - don't stretch */
+/* Make sure images don't stretch */
 .project-image img {
   max-width: 100%;
   height: auto;
   object-fit: contain;
   display: block;
-  margin: 0 auto;
 }
 
-/* Mobile */
+/* Mobile adjustments */
 @media (max-width: 768px) {
   .project-video-container {
     padding: 15px;
@@ -599,5 +604,13 @@ padding-left: 30px;
   
   .video-responsive {
     max-width: 100%;
+  }
+  
+  .image-caption {
+    margin: 15px 15px 40px 15px;
+  }
+  
+  .project-text-block {
+    margin: 30px 15px;
   }
 }
