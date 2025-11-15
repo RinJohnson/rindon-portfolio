@@ -19,8 +19,8 @@ export default async function WritingPage() {
           
           <h1 className="project-title">Writing</h1>
           
-          <div className="project-info">
-            <p>Writing and publications coming soon.</p>
+          <div className="project-info" style={{ maxWidth: '800px' }}>
+            <p>Essays, fiction, poetry, and other writings.</p>
           </div>
         </div>
       </main>
