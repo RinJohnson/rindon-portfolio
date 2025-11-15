@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { asText } from '@prismicio/client'
 import { PrismicRichText } from '@prismicio/react'
 import { client } from '../../../prismicio'
 import Navigation from '../../../components/Navigation'
@@ -36,8 +37,15 @@ export default async function WorkPage({ params }) {
       galleryImages.push(...work.data.gallery)
     }
 
+    // Extract title from Rich Text field
+    const title = work.data.project_title 
+      ? asText(work.data.project_title)
+      : 'Untitled'
+
     // Get the year from project_date
-    const year = work.data.project_date ? new Date(work.data.project_date).getFullYear() : ''
+    const year = work.data.project_date 
+      ? new Date(work.data.project_date).getFullYear()
+      : ''
 
     return (
       <>
@@ -50,7 +58,7 @@ export default async function WorkPage({ params }) {
               ←
             </Link>
             
-            <h1 className="project-title">{work.data.project_title || 'Untitled'}</h1>
+            <h1 className="project-title">{title}</h1>
             
             <div className="project-info">
               {year && <>{year}</>}
