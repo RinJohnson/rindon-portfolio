@@ -3,20 +3,20 @@ import { asText } from '@prismicio/client'
 import { client } from '../prismicio'
 import Navigation from '../components/Navigation'
 import CursorTracker from '../components/CursorTracker'
-
-const grayColors = [
-  '#e8e8e8',
-  '#d0d0d0',
-  '#b8b8b8',
-  '#a0a0a0',
-  '#888888',
-  '#707070',
-  '#585858',
-  '#404040',
-  '#282828',
-  '#101010',
+// White to Yves Klein Blue gradient
+const gradientColors = [
+  '#FFFFFF',  // White
+  '#E6ECFA',  // Very light blue
+  '#CCD9F5',  // Light blue
+  '#B3C6F0',  // Lighter blue
+  '#99B3EB',  // Medium-light blue
+  '#80A0E6',  // Medium blue
+  '#668DE1',  // Medium-strong blue
+  '#4D7ADC',  // Strong blue
+  '#3367D7',  // Deeper blue
+  '#1A54D2',  // Very deep blue
+  '#002FA7',  // Yves Klein Blue (IKB)
 ]
-
 export default async function Home() {
   const works = await client.getAllByType('work_item', {
     orderings: [
@@ -49,7 +49,7 @@ export default async function Home() {
                 href={`/work/${work.uid}`} 
                 className="landing-item"
                 style={{ 
-                  background: grayColors[index % grayColors.length] 
+                 background: gradientColors[index % gradientColors.length]
                 }}
               >
                 <div className="landing-item-content">
