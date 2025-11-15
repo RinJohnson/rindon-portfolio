@@ -57,27 +57,28 @@ export default async function SeriesPage({ params }) {
         </div>
 
         <div className="landing-list">
-          {seriesWorks.map((work, index) => (
-            <Link 
-              key={work.id}
-              href={`/work/${work.uid}`} 
-              className="landing-item"
-              style={{ 
-                background: grayColors[index % grayColors.length] 
-              }}
-            >
-              <div className="landing-item-content">
-                <div className="landing-item-title">
-                  {work.data.title}
+          {seriesWorks.map((work, index) => {
+            const year = work.data.project_date ? new Date(work.data.project_date).getFullYear() : ''
+            return (
+              <Link 
+                key={work.id}
+                href={`/work/${work.uid}`} 
+                className="landing-item"
+                style={{ 
+                  background: grayColors[index % grayColors.length] 
+                }}
+              >
+                <div className="landing-item-content">
+                  <div className="landing-item-title">
+                    {work.data.project_title || 'Untitled'}
+                  </div>
+                  <div className="landing-item-info">
+                    {year}
+                  </div>
                 </div>
-                <div className="landing-item-info">
-                  {work.data.venue && `${work.data.venue}`}
-                  {work.data.location && `, ${work.data.location}`}
-                  {work.data.year && ` / ${work.data.year}`}
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </div>
       </main>
     </>
