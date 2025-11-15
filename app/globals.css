@@ -439,3 +439,64 @@ padding-left: 30px;
     padding: 25px 20px;
   }
 }
+/* ========================================
+   PRESS TEXT SIZE FIX
+   ======================================== */
+.press-text p,
+.press-text h1,
+.press-text h2,
+.press-text h3,
+.press-text h4,
+.press-text h5,
+.press-text h6,
+.press-text li,
+.press-text span {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  line-height: 1.6 !important;
+}
+
+.press-text strong {
+  font-weight: 400 !important;
+}
+
+/* ========================================
+   VIDEO EMBED STYLING
+   ======================================== */
+.video-container {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #ffffff;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.video-embed {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.video-embed iframe,
+.video-embed object,
+.video-embed embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Responsive video */
+@media (max-width: 768px) {
+  .video-container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
