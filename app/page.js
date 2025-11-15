@@ -17,64 +17,41 @@ const grayColors = [
 ]
 
 export default async function Home() {
-  try {
-    const works = await client.getAllByType('work_item', {
-      orderings: [
-        { field: 'my.work_item.year', direction: 'desc' },
-        { field: 'document.first_publication_date', direction: 'desc' }
-      ]
-    })
+  const works = await client.getAllByType('work_item', {
+    orderings: [
+      { field: 'my.work_item.project_date', direction: 'desc' },
+      { field: 'document.first_publication_date', direction: 'desc' }
+    ]
+  })
 
-    console.log('Fetched works:', works.length)
-
-    return (
-      <>
-        <Navigation shows={works} works={works} />
-        <CursorTracker />
-        
-        <main className="main-content">
-          <div className="landing-list">
-            {works.map((work, index) => (
-              <Link 
-                key={work.id}
-                href={`/work/${work.uid}`} 
-                className="landing-item"
-                style={{ 
-                  background: grayColors[index % grayColors.length] 
-                }}
-              >
-                <div className="landing-item-content">
-                  <div className="landing-item-title">
-                    {work.data.title || work.data.Title || 'Untitled'}
-                  </div>
-                  <div className="landing-item-info">
-                    {work.data.venue && `${work.data.venue}`}
-                    {work.data.Venue && `${work.data.Venue}`}
-                    {work.data.location && `, ${work.data.location}`}
-                    {work.data.Location && `, ${work.data.Location}`}
-                    {work.data.year && ` / ${work.data.year}`}
-                    {work.data.Year && ` / ${work.data.Year}`}
-                  </div>
+  return (
+    <>
+      <Navigation shows={works} works={works} />
+      <CursorTracker />
+      
+      <main className="main-content">
+        <div className="landing-list">
+          {works.map((work, index) => (
+            <Link 
+              key={work.id}
+              href={`/work/${work.uid}`} 
+              className="landing-item"
+              style={{ 
+                background: grayColors[index % grayColors.length] 
+              }}
+            >
+              <div className="landing-item-content">
+                <div className="landing-item-title">
+                  {work.data.project_title || 'Untitled'}
                 </div>
-              </Link>
-            ))}
-          </div>
-        </main>
-      </>
-    )
-  } catch (error) {
-    console.error('Error fetching works:', error)
-    return (
-      <>
-        <Navigation shows={[]} works={[]} />
-        <CursorTracker />
-        <main className="main-content">
-          <div style={{ padding: '40px', textAlign: 'center' }}>
-            <h1>Error loading content</h1>
-            <p>Please check your Prismic configuration</p>
-          </div>
-        </main>
-      </>
-    )
-  }
+                <div className="landing-item-info">
+                  {work.data.project_date && new Date(work.data.project_date).getFullYear()}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </main>
+    </>
+  )
 }
