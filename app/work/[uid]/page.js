@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import { asText } from '@prismicio/client'
 import { PrismicRichText } from '@prismicio/react'
 import { client } from '../../../prismicio'
@@ -38,17 +37,6 @@ export default async function WorkPage({ params }) {
       ? new Date(work.data.project_date).getFullYear()
       : ''
 
-    // Pre-filter valid slices
-    const validSlices = work.data.body && Array.isArray(work.data.body)
-      ? work.data.body.filter(slice => {
-          if (!slice || !slice.slice_type) return false
-          if (slice.slice_type === 'image' && slice.primary?.image?.url) return true
-          if (slice.slice_type === 'video' && slice.primary?.embed_url && slice.primary?.html) return true
-          if (slice.slice_type === 'text' && slice.primary?.text && Array.isArray(slice.primary.text) && slice.primary.text.length > 0) return true
-          return false
-        })
-      : []
-
     return (
       <>
         <Navigation shows={allWorks} works={allWorks} />
@@ -68,28 +56,29 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
-          {/* Render ALL valid body slices in order */}
-          {validSlices.length > 0 && (
+          {/* Render body slices */}
+          {work.data.body && Array.isArray(work.data.body) && work.data.body.length > 0 && (
             <div className="project-images">
-              {validSlices.map((slice, index) => {
-                // Handle Image slices
-                if (slice.slice_type === 'image') {
+              {work.data.body.map((slice, index) => {
+                
+                // IMAGE SLICES
+                if (slice.slice_type === 'image' && slice.primary?.image?.url) {
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
                     ? asText(slice.primary.caption)
                     : ''
                   
                   return (
-                    <div key={`image-${slice.id || index}`}>
+                    <div key={`slice-${index}`}>
                       <div className="project-image">
                         <img
                           src={slice.primary.image.url}
-                          alt={slice.primary.image.alt || caption || title}
+                          alt={slice.primary.image.alt || caption || ''}
                           className="gallery-item"
                           data-index={index}
                           style={{
-                            width: '100%',
+                            maxWidth: '100%',
                             height: 'auto',
-                            display: 'block'
+                            objectFit: 'contain'
                           }}
                         />
                       </div>
@@ -100,37 +89,40 @@ export default async function WorkPage({ params }) {
                   )
                 }
                 
-                // Handle Video slices
+                // VIDEO SLICES - Handle Vimeo/YouTube embeds
                 if (slice.slice_type === 'video') {
+                  // Prismic embed fields have both embed_url and html
+                  const hasEmbed = slice.primary?.embed_url
+                  const embedHtml = slice.primary?.html
+                  
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
                     ? asText(slice.primary.caption)
                     : ''
                   
-                  return (
-                    <div key={`video-${slice.id || index}`}>
-                      <div className="project-image video-container">
-                        <div 
-                          className="video-embed"
-                          dangerouslySetInnerHTML={{ __html: slice.primary.html }}
-                        />
+                  // Only render if we have embed data
+                  if (hasEmbed && embedHtml) {
+                    return (
+                      <div key={`slice-${index}`}>
+                        <div className="project-video-container">
+                          <div 
+                            className="video-responsive"
+                            dangerouslySetInnerHTML={{ __html: embedHtml }}
+                          />
+                        </div>
+                        {caption && (
+                          <div className="image-caption">{caption}</div>
+                        )}
                       </div>
-                      {caption && (
-                        <div className="image-caption">{caption}</div>
-                      )}
-                    </div>
-                  )
+                    )
+                  }
+                  
+                  return null
                 }
                 
-                // Handle Text slices
-                if (slice.slice_type === 'text') {
+                // TEXT SLICES
+                if (slice.slice_type === 'text' && slice.primary?.text && Array.isArray(slice.primary.text) && slice.primary.text.length > 0) {
                   return (
-                    <div key={`text-${slice.id || index}`} style={{ 
-                      maxWidth: '800px', 
-                      margin: '40px auto',
-                      padding: '0 30px',
-                      fontSize: '14px',
-                      lineHeight: 1.6
-                    }}>
+                    <div key={`slice-${index}`} className="project-text-block">
                       <PrismicRichText field={slice.primary.text} />
                     </div>
                   )
@@ -141,7 +133,7 @@ export default async function WorkPage({ params }) {
             </div>
           )}
 
-          {/* Lightbox for images only */}
+          {/* Lightbox for images */}
           {galleryImages.length > 0 && <Lightbox images={galleryImages} />}
         </main>
       </>
