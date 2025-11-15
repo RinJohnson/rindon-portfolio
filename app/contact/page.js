@@ -38,7 +38,7 @@ export default async function ContactPage() {
                         href={`mailto:${contact.data.email}`}
                         style={{ color: 'var(--text-color)', textDecoration: 'underline' }}
                       >
-                     email
+                     Email
                       </a>
                     </p>
                     <br />
