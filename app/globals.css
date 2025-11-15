@@ -538,3 +538,66 @@ padding-left: 30px;
   font-weight: 300 !important;
   line-height: 1.6 !important;
 }
+* ========================================
+   VIDEO EMBEDS (Vimeo/YouTube)
+   ======================================== */
+
+.project-video-container {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  background: #ffffff;
+  padding: 30px;
+  margin-bottom: 0;
+}
+
+.video-responsive {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.video-responsive iframe,
+.video-responsive object,
+.video-responsive embed,
+.video-responsive video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}
+
+/* Text blocks between media */
+.project-text-block {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 30px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Fix for images - don't stretch */
+.project-image img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .project-video-container {
+    padding: 15px;
+  }
+  
+  .video-responsive {
+    max-width: 100%;
+  }
+}
