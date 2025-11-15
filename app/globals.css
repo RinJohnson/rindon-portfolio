@@ -305,7 +305,7 @@ main {
 .project-images {
   display: flex;
   flex-direction: column;
-  gap: 28;
+  gap: 28px;
   margin: 0;
   padding: 0;
 }
