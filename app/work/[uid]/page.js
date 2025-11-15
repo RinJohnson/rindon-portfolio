@@ -20,10 +20,10 @@ export default async function WorkPage({ params }) {
   try {
     const work = await client.getByUID('work_item', params.uid)
     
-    let title = 'Untitled'
-    if (work.data.intro_text && work.data.intro_text.length > 0) {
-      title = asText(work.data.intro_text)
-    }
+    // Use project_title - this is the correct field!
+    const title = work.data.project_title && work.data.project_title.length > 0
+      ? asText(work.data.project_title)
+      : 'Untitled'
     
     const dimensions = work.data.dimensions && work.data.dimensions.length > 0 
       ? asText(work.data.dimensions) 
@@ -48,9 +48,9 @@ export default async function WorkPage({ params }) {
             <h1 className="project-title">{title}</h1>
             
             <div className="project-info">
-              {work.data.date && (
+              {work.data.project_date && (
                 <>
-                  {new Date(work.data.date).getFullYear()}
+                  {new Date(work.data.project_date).getFullYear()}
                   <br />
                 </>
               )}
@@ -87,12 +87,14 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
+          {/* Handle Body slices for images, videos, and text blocks */}
           {work.data.body && work.data.body.length > 0 && (
             <div className="project-images">
               {work.data.body.map((slice, index) => {
-                if (slice.slice_type === 'image' && slice.primary && slice.primary.image && slice.primary.image.url) {
+                // Handle Image slices
+                if (slice.slice_type === 'image' && slice.primary?.image?.url) {
                   return (
-                    <div key={index}>
+                    <div key={`image-${index}`}>
                       <div className="project-image">
                         <PrismicNextImage
                           field={slice.primary.image}
@@ -109,20 +111,38 @@ export default async function WorkPage({ params }) {
                   )
                 }
                 
-                if (slice.slice_type === 'video' && slice.primary && slice.primary.embed_url) {
+                // Handle Video slices
+                if (slice.slice_type === 'video' && slice.primary?.embed_url) {
                   return (
                     <div key={`video-${index}`}>
                       <div className="project-image video-container">
-                        <div 
-                          className="video-embed"
-                          dangerouslySetInnerHTML={{ __html: slice.primary.html }}
-                        />
+                        {slice.primary.html && (
+                          <div 
+                            className="video-embed"
+                            dangerouslySetInnerHTML={{ __html: slice.primary.html }}
+                          />
+                        )}
                       </div>
                       {slice.primary.caption && slice.primary.caption.length > 0 && (
                         <div className="image-caption">
                           {asText(slice.primary.caption)}
                         </div>
                       )}
+                    </div>
+                  )
+                }
+                
+                // Handle Text slices (the text blocks in Body tab)
+                if (slice.slice_type === 'text' && slice.primary?.text) {
+                  return (
+                    <div key={`text-${index}`} style={{ 
+                      maxWidth: '800px', 
+                      margin: '40px auto',
+                      padding: '0 30px',
+                      fontSize: '14px',
+                      lineHeight: 1.6
+                    }}>
+                      <PrismicRichText field={slice.primary.text} />
                     </div>
                   )
                 }
