@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { asText } from '@prismicio/client'
 import { client } from '../prismicio'
 import Navigation from '../components/Navigation'
 import CursorTracker from '../components/CursorTracker'
@@ -33,20 +32,45 @@ export default async function Home() {
       <main className="main-content">
         <div className="landing-list">
           {works.map((work, index) => {
-            // Use project_title - this is the correct field!
-            const title = work.data.project_title && work.data.project_title.length > 0
-              ? asText(work.data.project_title)
-              : 'Untitled'
+            // Safely get title
+            let title = 'Untitled'
+            try {
+              if (work.data?.project_title) {
+                const titleData = work.data.project_title
+                if (Array.isArray(titleData) && titleData.length > 0 && titleData[0].text) {
+                  title = titleData[0].text
+                } else if (typeof titleData === 'string') {
+                  title = titleData
+                }
+              }
+            } catch (e) {
+              console.error('Error getting title:', e)
+            }
             
-            // Get year from project_date
-            const year = work.data.project_date 
-              ? new Date(work.data.project_date).getFullYear()
-              : ''
+            // Safely get year
+            let year = ''
+            try {
+              if (work.data?.project_date) {
+                year = new Date(work.data.project_date).getFullYear().toString()
+              }
+            } catch (e) {
+              console.error('Error getting year:', e)
+            }
             
-            // Get location
-            const location = work.data.location && work.data.location.length > 0
-              ? asText(work.data.location)
-              : ''
+            // Safely get location
+            let location = ''
+            try {
+              if (work.data?.location) {
+                const locationData = work.data.location
+                if (Array.isArray(locationData) && locationData.length > 0 && locationData[0].text) {
+                  location = locationData[0].text
+                } else if (typeof locationData === 'string') {
+                  location = locationData
+                }
+              }
+            } catch (e) {
+              console.error('Error getting location:', e)
+            }
 
             return (
               <Link 
