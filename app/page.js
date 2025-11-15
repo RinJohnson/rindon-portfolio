@@ -3,7 +3,6 @@ import { client } from '../prismicio'
 import Navigation from '../components/Navigation'
 import CursorTracker from '../components/CursorTracker'
 
-// Define the gray gradient colors
 const grayColors = [
   '#e8e8e8',
   '#d0d0d0',
@@ -18,44 +17,64 @@ const grayColors = [
 ]
 
 export default async function Home() {
-  // Fetch all work items from Prismic
-  const works = await client.getAllByType('work_item', {
-    orderings: [
-      { field: 'my.work_item.year', direction: 'desc' },
-      { field: 'document.first_publication_date', direction: 'desc' }
-    ]
-  })
+  try {
+    const works = await client.getAllByType('work_item', {
+      orderings: [
+        { field: 'my.work_item.year', direction: 'desc' },
+        { field: 'document.first_publication_date', direction: 'desc' }
+      ]
+    })
 
-  return (
-    <>
-      <Navigation shows={works} works={works} />
-      <CursorTracker />
-      
-      <main className="main-content">
-        <div className="landing-list">
-          {works.map((work, index) => (
-            <Link 
-              key={work.id}
-              href={`/work/${work.uid}`} 
-              className="landing-item"
-              style={{ 
-                background: grayColors[index % grayColors.length] 
-              }}
-            >
-              <div className="landing-item-content">
-                <div className="landing-item-title">
-                  {work.data.title}
+    console.log('Fetched works:', works.length)
+
+    return (
+      <>
+        <Navigation shows={works} works={works} />
+        <CursorTracker />
+        
+        <main className="main-content">
+          <div className="landing-list">
+            {works.map((work, index) => (
+              <Link 
+                key={work.id}
+                href={`/work/${work.uid}`} 
+                className="landing-item"
+                style={{ 
+                  background: grayColors[index % grayColors.length] 
+                }}
+              >
+                <div className="landing-item-content">
+                  <div className="landing-item-title">
+                    {work.data.title || work.data.Title || 'Untitled'}
+                  </div>
+                  <div className="landing-item-info">
+                    {work.data.venue && `${work.data.venue}`}
+                    {work.data.Venue && `${work.data.Venue}`}
+                    {work.data.location && `, ${work.data.location}`}
+                    {work.data.Location && `, ${work.data.Location}`}
+                    {work.data.year && ` / ${work.data.year}`}
+                    {work.data.Year && ` / ${work.data.Year}`}
+                  </div>
                 </div>
-                <div className="landing-item-info">
-                  {work.data.venue && `${work.data.venue}`}
-                  {work.data.location && `, ${work.data.location}`}
-                  {work.data.year && ` / ${work.data.year}`}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </main>
-    </>
-  )
+              </Link>
+            ))}
+          </div>
+        </main>
+      </>
+    )
+  } catch (error) {
+    console.error('Error fetching works:', error)
+    return (
+      <>
+        <Navigation shows={[]} works={[]} />
+        <CursorTracker />
+        <main className="main-content">
+          <div style={{ padding: '40px', textAlign: 'center' }}>
+            <h1>Error loading content</h1>
+            <p>Please check your Prismic configuration</p>
+          </div>
+        </main>
+      </>
+    )
+  }
 }
