@@ -293,7 +293,7 @@ main {
 .project-title {
   font-size: 14px;
   font-weight: 400;
-  margin-bottom: 10px;
+  margin-bottom: 35px;
 }
 
 .project-info {
@@ -500,4 +500,41 @@ padding-left: 30px;
     padding-left: 15px;
     padding-right: 15px;
   }
+}
+
+/* Force uniform text sizing across all pages */
+.project-info p,
+.project-info h1,
+.project-info h2,
+.project-info h3,
+.project-info h4,
+.project-info h5,
+.project-info h6,
+.project-info li,
+.project-info span,
+.project-info div {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  line-height: 1.6 !important;
+}
+
+.project-info strong {
+  font-weight: 400 !important;
+}
+
+.project-info em {
+  font-style: italic;
+}
+
+/* Ensure rich text content is uniform */
+.project-info [class*="RichText"] p,
+.project-info [class*="RichText"] h1,
+.project-info [class*="RichText"] h2,
+.project-info [class*="RichText"] h3,
+.project-info [class*="RichText"] h4,
+.project-info [class*="RichText"] h5,
+.project-info [class*="RichText"] h6 {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  line-height: 1.6 !important;
 }
