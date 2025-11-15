@@ -25,8 +25,8 @@ export default function Navigation({ shows = [], works = [] }) {
   // Group works by tags
   const worksByTag = {}
   works.forEach(work => {
-    if (work.data.tags) {
-      work.data.tags.forEach(tag => {
+    if (work.tags && Array.isArray(work.tags)) {
+      work.tags.forEach(tag => {
         if (!worksByTag[tag]) {
           worksByTag[tag] = []
         }
@@ -97,3 +97,4 @@ export default function Navigation({ shows = [], works = [] }) {
     </nav>
   )
 }
+ "Fix Prismic tag access in navigation"
