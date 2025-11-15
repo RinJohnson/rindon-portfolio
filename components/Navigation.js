@@ -50,15 +50,18 @@ export default function Navigation({ shows = [], works = [] }) {
             Shows
           </button>
           <div className="dropdown-menu">
-            {shows.map((show) => (
-              <Link 
-                key={show.id} 
-                href={`/work/${show.uid}`}
-                onClick={() => setActiveDropdown(null)}
-              >
-                {show.data.title} {show.data.year && `(${show.data.year})`}
-              </Link>
-            ))}
+            {shows.map((show) => {
+              const year = show.data.project_date ? new Date(show.data.project_date).getFullYear() : ''
+              return (
+                <Link 
+                  key={show.id} 
+                  href={`/work/${show.uid}`}
+                  onClick={() => setActiveDropdown(null)}
+                >
+                  {show.data.project_title || 'Untitled'} {year && `(${year})`}
+                </Link>
+              )
+            })}
           </div>
         </div>
 
