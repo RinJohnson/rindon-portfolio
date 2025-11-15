@@ -97,4 +97,3 @@ export default function Navigation({ shows = [], works = [] }) {
     </nav>
   )
 }
- "Fix Navigation syntax error" 
