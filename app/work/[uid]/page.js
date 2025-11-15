@@ -21,10 +21,9 @@ export default async function WorkPage({ params }) {
     const work = await client.getByUID('work_item', params.uid)
     
 let title = 'Untitled'
-if (work.data.title && work.data.title.length > 0) {
-  title = asText(work.data.title)
+if (work.data.intro_text && work.data.intro_text.length > 0) {
+  title = asText(work.data.intro_text)
 }
-    
     const dimensions = work.data.dimensions && work.data.dimensions.length > 0 
       ? asText(work.data.dimensions) 
       : null
