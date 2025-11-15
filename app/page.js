@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { asText } from '@prismicio/client'
 import { client } from '../prismicio'
 import Navigation from '../components/Navigation'
 import CursorTracker from '../components/CursorTracker'
@@ -31,25 +32,37 @@ export default async function Home() {
       
       <main className="main-content">
         <div className="landing-list">
-          {works.map((work, index) => (
-            <Link 
-              key={work.id}
-              href={`/work/${work.uid}`} 
-              className="landing-item"
-              style={{ 
-                background: grayColors[index % grayColors.length] 
-              }}
-            >
-              <div className="landing-item-content">
-                <div className="landing-item-title">
-                  {work.data.project_title || 'Untitled'}
+          {works.map((work, index) => {
+            // Extract title from Rich Text field
+            const title = work.data.project_title 
+              ? asText(work.data.project_title)
+              : 'Untitled'
+            
+            // Extract year from date
+            const year = work.data.project_date 
+              ? new Date(work.data.project_date).getFullYear()
+              : ''
+
+            return (
+              <Link 
+                key={work.id}
+                href={`/work/${work.uid}`} 
+                className="landing-item"
+                style={{ 
+                  background: grayColors[index % grayColors.length] 
+                }}
+              >
+                <div className="landing-item-content">
+                  <div className="landing-item-title">
+                    {title}
+                  </div>
+                  <div className="landing-item-info">
+                    {year}
+                  </div>
                 </div>
-                <div className="landing-item-info">
-                  {work.data.project_date && new Date(work.data.project_date).getFullYear()}
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            )
+          })}
         </div>
       </main>
     </>
