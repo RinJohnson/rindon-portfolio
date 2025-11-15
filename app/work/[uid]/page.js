@@ -23,7 +23,7 @@ export default async function WorkPage({ params }) {
     const galleryImages = []
     if (work.data.body && Array.isArray(work.data.body)) {
       work.data.body.forEach(slice => {
-        if (slice.slice_type === 'image' && slice.primary?.image) {
+        if (slice.slice_type === 'image' && slice.primary?.image?.url) {
           galleryImages.push(slice.primary.image)
         }
       })
@@ -36,6 +36,17 @@ export default async function WorkPage({ params }) {
     const year = work.data.project_date 
       ? new Date(work.data.project_date).getFullYear()
       : ''
+
+    // Pre-process slices to filter out any that would cause issues
+    const validSlices = work.data.body && Array.isArray(work.data.body)
+      ? work.data.body.filter(slice => {
+          if (!slice || !slice.slice_type) return false
+          if (slice.slice_type === 'image' && slice.primary?.image?.url) return true
+          if (slice.slice_type === 'video' && slice.primary?.embed_url) return true
+          if (slice.slice_type === 'text' && slice.primary?.text && Array.isArray(slice.primary.text) && slice.primary.text.length > 0) return true
+          return false
+        })
+      : []
 
     return (
       <>
@@ -50,24 +61,24 @@ export default async function WorkPage({ params }) {
             <div className="project-info">
               {year && <>{year}</>}
               <br /><br />
-              {work.data.intro_text && (
+              {work.data.intro_text && Array.isArray(work.data.intro_text) && work.data.intro_text.length > 0 && (
                 <PrismicRichText field={work.data.intro_text} />
               )}
             </div>
           </div>
 
-          {/* Render ALL body slices in order (images, videos, text) */}
-          {work.data.body && Array.isArray(work.data.body) && work.data.body.length > 0 && (
+          {/* Render ALL valid body slices in order (images, videos, text) */}
+          {validSlices.length > 0 && (
             <div className="project-images">
-              {work.data.body.map((slice, index) => {
+              {validSlices.map((slice, index) => {
                 // Handle Image slices
-                if (slice.slice_type === 'image' && slice.primary?.image?.url) {
+                if (slice.slice_type === 'image') {
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
                     ? asText(slice.primary.caption)
                     : ''
                   
                   return (
-                    <div key={`slice-${index}`}>
+                    <div key={`image-${slice.id || index}`}>
                       <div className="project-image">
                         <PrismicNextImage
                           field={slice.primary.image}
@@ -83,13 +94,13 @@ export default async function WorkPage({ params }) {
                 }
                 
                 // Handle Video slices
-                if (slice.slice_type === 'video' && slice.primary?.embed_url) {
+                if (slice.slice_type === 'video') {
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
                     ? asText(slice.primary.caption)
                     : ''
                   
                   return (
-                    <div key={`slice-${index}`}>
+                    <div key={`video-${slice.id || index}`}>
                       <div className="project-image video-container">
                         {slice.primary.html && (
                           <div 
@@ -106,9 +117,9 @@ export default async function WorkPage({ params }) {
                 }
                 
                 // Handle Text slices
-                if (slice.slice_type === 'text' && slice.primary?.text && Array.isArray(slice.primary.text) && slice.primary.text.length > 0) {
+                if (slice.slice_type === 'text') {
                   return (
-                    <div key={`slice-${index}`} style={{ 
+                    <div key={`text-${slice.id || index}`} style={{ 
                       maxWidth: '800px', 
                       margin: '40px auto',
                       padding: '0 30px',
@@ -120,6 +131,7 @@ export default async function WorkPage({ params }) {
                   )
                 }
                 
+                // This should never happen because we filtered, but just in case
                 return null
               })}
             </div>
