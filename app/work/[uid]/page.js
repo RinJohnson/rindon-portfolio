@@ -56,9 +56,9 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
-          {/* Render body slices */}
+          {/* Render body slices - images shown here, not in Lightbox */}
           {work.data.body && Array.isArray(work.data.body) && work.data.body.length > 0 && (
-            <div className="project-images">
+            <div className="project-content">
               {work.data.body.map((slice, index) => {
                 
                 // IMAGE SLICES
@@ -75,11 +75,6 @@ export default async function WorkPage({ params }) {
                           alt={slice.primary.image.alt || caption || ''}
                           className="gallery-item"
                           data-index={index}
-                          style={{
-                            maxWidth: '100%',
-                            height: 'auto',
-                            objectFit: 'contain'
-                          }}
                         />
                       </div>
                       {caption && (
@@ -89,9 +84,8 @@ export default async function WorkPage({ params }) {
                   )
                 }
                 
-                // VIDEO SLICES - Handle Vimeo/YouTube embeds
+                // VIDEO SLICES
                 if (slice.slice_type === 'video') {
-                  // Prismic embed fields have both embed_url and html
                   const hasEmbed = slice.primary?.embed_url
                   const embedHtml = slice.primary?.html
                   
@@ -99,7 +93,6 @@ export default async function WorkPage({ params }) {
                     ? asText(slice.primary.caption)
                     : ''
                   
-                  // Only render if we have embed data
                   if (hasEmbed && embedHtml) {
                     return (
                       <div key={`slice-${index}`}>
@@ -133,7 +126,7 @@ export default async function WorkPage({ params }) {
             </div>
           )}
 
-          {/* Lightbox for images */}
+          {/* Lightbox component for click-to-enlarge */}
           {galleryImages.length > 0 && <Lightbox images={galleryImages} />}
         </main>
       </>
