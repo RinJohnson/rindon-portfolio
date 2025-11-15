@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { asText } from '@prismicio/client'
 import Link from 'next/link'
 
 export default function Navigation({ shows = [], works = [] }) {
@@ -51,14 +52,20 @@ export default function Navigation({ shows = [], works = [] }) {
           </button>
           <div className="dropdown-menu">
             {shows.map((show) => {
-              const year = show.data.project_date ? new Date(show.data.project_date).getFullYear() : ''
+              const title = show.data.project_title 
+                ? asText(show.data.project_title)
+                : 'Untitled'
+              const year = show.data.project_date 
+                ? new Date(show.data.project_date).getFullYear()
+                : ''
+              
               return (
                 <Link 
                   key={show.id} 
                   href={`/work/${show.uid}`}
                   onClick={() => setActiveDropdown(null)}
                 >
-                  {show.data.project_title || 'Untitled'} {year && `(${year})`}
+                  {title} {year && `(${year})`}
                 </Link>
               )
             })}
