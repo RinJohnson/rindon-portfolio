@@ -19,8 +19,8 @@ export default async function PressPage() {
           
           <h1 className="project-title">Press</h1>
           
-          <div className="project-info">
-            <p>Press coverage coming soon.</p>
+          <div className="project-info" style={{ maxWidth: '800px' }}>
+            <p>Press coverage and mentions.</p>
           </div>
         </div>
       </main>
