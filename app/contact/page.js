@@ -19,13 +19,12 @@ export default async function ContactPage() {
           
           <h1 className="project-title">Contact</h1>
           
-          <div className="project-info">
-            <p>
-              For inquiries, please email:<br />
-              <a href="mailto:rindonjohnsonstudio@protonmail.com">
-                rindonjohnsonstudio@protonmail.com
-              </a>
-            </p>
+          <div className="project-info" style={{ maxWidth: '800px' }}>
+            <p>For inquiries:</p>
+            <br />
+            <p>Email: contact@rinjohnson.com</p>
+            <br />
+            <p>Representation: [Your gallery/agent info]</p>
           </div>
         </div>
       </main>
