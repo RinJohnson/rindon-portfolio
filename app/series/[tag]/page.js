@@ -17,24 +17,23 @@ export async function generateStaticParams() {
   const allWorks = await client.getAllByType('work_item')
   const tags = new Set()
   
-  allWorks.forEach(work => {
-    if (work.data.tags) {
-      work.data.tags.forEach(tag => tags.add(tag))
+allWorks.forEach(work => {
+    if (work.tags && Array.isArray(work.tags)) {
+      work.tags.forEach(tag => tags.add(tag))
     }
   })
   
   return Array.from(tags).map((tag) => ({
-    tag: tag,
+    tag: String(tag),
   }))
-}
 
 export default async function SeriesPage({ params }) {
   const { tag } = params
   const allWorks = await client.getAllByType('work_item')
   
   // Filter works by tag
-  const seriesWorks = allWorks.filter(work => 
-    work.data.tags && work.data.tags.includes(tag)
+ const seriesWorks = allWorks.filter(work => 
+    work.tags && Array.isArray(work.tags) && work.tags.includes(tag)
   )
 
   // Convert tag to display name
@@ -83,3 +82,4 @@ export default async function SeriesPage({ params }) {
     </>
   )
 }
+"Fix Prismic tag access in series page"
