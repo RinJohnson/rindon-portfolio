@@ -44,5 +44,42 @@ export default async function SeriesPage({ params }) {
 
   return (
     <>
-      <Navigation shows={all
-                          "Fix series page syntax error" 
+      <Navigation shows={allWorks} works={allWorks} />
+      <CursorTracker />
+      
+      <main className="main-content">
+        <div className="project-view">
+          <Link href="/" className="back-link">
+            ←
+          </Link>
+          
+          <h1 className="project-title">{displayName}</h1>
+        </div>
+
+        <div className="landing-list">
+          {seriesWorks.map((work, index) => (
+            <Link 
+              key={work.id}
+              href={`/work/${work.uid}`} 
+              className="landing-item"
+              style={{ 
+                background: grayColors[index % grayColors.length] 
+              }}
+            >
+              <div className="landing-item-content">
+                <div className="landing-item-title">
+                  {work.data.title}
+                </div>
+                <div className="landing-item-info">
+                  {work.data.venue && `${work.data.venue}`}
+                  {work.data.location && `, ${work.data.location}`}
+                  {work.data.year && ` / ${work.data.year}`}
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </main>
+    </>
+  )
+}
