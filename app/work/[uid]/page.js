@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { asText } from '@prismicio/client'
 import { PrismicRichText, PrismicNextImage } from '@prismicio/react'
 import { client } from '../../../prismicio'
 import Navigation from '../../../components/Navigation'
@@ -14,24 +13,48 @@ export async function generateStaticParams() {
   }))
 }
 
+// Safe text extractor
+function safeGetText(field) {
+  if (!field) return ''
+  if (typeof field === 'string') return field
+  if (Array.isArray(field) && field.length > 0 && field[0]?.text) {
+    return field[0].text
+  }
+  return ''
+}
+
+// Check if rich text field has content
+function hasRichTextContent(field) {
+  if (!field) return false
+  if (Array.isArray(field) && field.length > 0) {
+    return field.some(block => block?.text && block.text.trim() !== '')
+  }
+  return false
+}
+
 export default async function WorkPage({ params }) {
   const allWorks = await client.getAllByType('work_item')
   
   try {
     const work = await client.getByUID('work_item', params.uid)
     
-    // Use project_title - this is the correct field!
-    const title = work.data.project_title && work.data.project_title.length > 0
-      ? asText(work.data.project_title)
-      : 'Untitled'
+    // Safely get title
+    const title = safeGetText(work.data?.project_title) || 'Untitled'
     
-    const dimensions = work.data.dimensions && work.data.dimensions.length > 0 
-      ? asText(work.data.dimensions) 
-      : null
-
-    const materials = work.data.materials && work.data.materials.length > 0
-      ? asText(work.data.materials)
-      : null
+    // Safely get other text fields
+    const dimensions = safeGetText(work.data?.dimensions)
+    const materials = safeGetText(work.data?.materials)
+    const location = safeGetText(work.data?.location)
+    
+    // Safely get year
+    let year = ''
+    if (work.data?.project_date) {
+      try {
+        year = new Date(work.data.project_date).getFullYear().toString()
+      } catch (e) {
+        console.error('Error parsing date:', e)
+      }
+    }
 
     return (
       <>
@@ -48,16 +71,16 @@ export default async function WorkPage({ params }) {
             <h1 className="project-title">{title}</h1>
             
             <div className="project-info">
-              {work.data.project_date && (
+              {year && (
                 <>
-                  {new Date(work.data.project_date).getFullYear()}
+                  {year}
                   <br />
                 </>
               )}
               
-              {work.data.location && work.data.location.length > 0 && (
+              {location && (
                 <>
-                  {asText(work.data.location)}
+                  {location}
                   <br />
                 </>
               )}
@@ -76,7 +99,7 @@ export default async function WorkPage({ params }) {
                 </>
               )}
               
-              {work.data.text && work.data.text.length > 0 && (
+              {hasRichTextContent(work.data?.text) && (
                 <>
                   <br />
                   <div style={{ fontSize: '14px', lineHeight: 1.6 }}>
@@ -87,12 +110,14 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
-          {/* Handle Body slices for images, videos, and text blocks */}
-          {work.data.body && work.data.body.length > 0 && (
+          {/* Handle Body slices for images, videos, and text */}
+          {work.data?.body && Array.isArray(work.data.body) && work.data.body.length > 0 && (
             <div className="project-images">
               {work.data.body.map((slice, index) => {
                 // Handle Image slices
                 if (slice.slice_type === 'image' && slice.primary?.image?.url) {
+                  const caption = safeGetText(slice.primary?.caption)
+                  
                   return (
                     <div key={`image-${index}`}>
                       <div className="project-image">
@@ -102,9 +127,9 @@ export default async function WorkPage({ params }) {
                           data-index={index}
                         />
                       </div>
-                      {slice.primary.caption && slice.primary.caption.length > 0 && (
+                      {caption && (
                         <div className="image-caption">
-                          {asText(slice.primary.caption)}
+                          {caption}
                         </div>
                       )}
                     </div>
@@ -112,28 +137,28 @@ export default async function WorkPage({ params }) {
                 }
                 
                 // Handle Video slices
-                if (slice.slice_type === 'video' && slice.primary?.embed_url) {
+                if (slice.slice_type === 'video' && slice.primary?.embed_url && slice.primary?.html) {
+                  const caption = safeGetText(slice.primary?.caption)
+                  
                   return (
                     <div key={`video-${index}`}>
                       <div className="project-image video-container">
-                        {slice.primary.html && (
-                          <div 
-                            className="video-embed"
-                            dangerouslySetInnerHTML={{ __html: slice.primary.html }}
-                          />
-                        )}
+                        <div 
+                          className="video-embed"
+                          dangerouslySetInnerHTML={{ __html: slice.primary.html }}
+                        />
                       </div>
-                      {slice.primary.caption && slice.primary.caption.length > 0 && (
+                      {caption && (
                         <div className="image-caption">
-                          {asText(slice.primary.caption)}
+                          {caption}
                         </div>
                       )}
                     </div>
                   )
                 }
                 
-                // Handle Text slices (the text blocks in Body tab)
-                if (slice.slice_type === 'text' && slice.primary?.text) {
+                // Handle Text slices
+                if (slice.slice_type === 'text' && hasRichTextContent(slice.primary?.text)) {
                   return (
                     <div key={`text-${index}`} style={{ 
                       maxWidth: '800px', 
