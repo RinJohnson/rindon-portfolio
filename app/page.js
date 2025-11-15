@@ -5,16 +5,17 @@ import Navigation from '../components/Navigation'
 import CursorTracker from '../components/CursorTracker'
 // White to Yves Klein Blue gradient
 const gradientColors = [
-  '#e8e8e8',
-  '#d0d0d0',
+  '#c8c8c8',
   '#b8b8b8',
-  '#a0a0a0',
+  '#a8a8a8',
+  '#989898',
   '#888888',
-  '#707070',
+  '#787878',
+  '#686868',
   '#585858',
-  '#404040',
-  '#282828',
-  '#101010',
+  '#484848',
+  '#383838',
+]
 export default async function Home() {
   const works = await client.getAllByType('work_item', {
     orderings: [
