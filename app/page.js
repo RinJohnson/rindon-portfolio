@@ -3,7 +3,7 @@ import { asText } from '@prismicio/client'
 import { client } from '../prismicio'
 import Navigation from '../components/Navigation'
 import CursorTracker from '../components/CursorTracker'
-// White to Yves Klein Blue gradient
+
 const gradientColors = [
   '#c8c8c8',
   '#b8b8b8',
@@ -16,6 +16,7 @@ const gradientColors = [
   '#484848',
   '#383838',
 ]
+
 export default async function Home() {
   const works = await client.getAllByType('work_item', {
     orderings: [
@@ -32,31 +33,29 @@ export default async function Home() {
       <main className="main-content">
         <div className="landing-list">
           {works.map((work, index) => {
-            // Extract title from Rich Text field
-            const title = work.data.project_title 
-              ? asText(work.data.project_title)
+            const title = work.data.intro_text && work.data.intro_text.length > 0
+              ? asText(work.data.intro_text)
               : 'Untitled'
             
-            // Extract year from date
-            const year = work.data.project_date 
-              ? new Date(work.data.project_date).getFullYear()
+            const year = work.data.date 
+              ? new Date(work.data.date).getFullYear()
+              : ''
+            
+            const location = work.data.location && work.data.location.length > 0
+              ? asText(work.data.location)
               : ''
 
             return (
               <Link 
                 key={work.id}
-                href={`/work/${work.uid}`} 
+                href={`/work/${work.uid}`}
                 className="landing-item"
-                style={{ 
-                 background: gradientColors[index % gradientColors.length]
-                }}
+                style={{ background: gradientColors[index % gradientColors.length] }}
               >
                 <div className="landing-item-content">
-                  <div className="landing-item-title">
-                    {title}
-                  </div>
+                  <div className="landing-item-title">{title}</div>
                   <div className="landing-item-info">
-                    {year}
+                    {location && year ? `${location} / ${year}` : location || year}
                   </div>
                 </div>
               </Link>
