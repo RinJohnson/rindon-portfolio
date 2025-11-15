@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { asText } from '@prismicio/client'
-import { PrismicRichText } from '@prismicio/react'
+import { asText, asHTML } from '@prismicio/client'
+import { PrismicRichText, PrismicNextImage } from '@prismicio/react'
 import { client } from '../../../prismicio'
 import Navigation from '../../../components/Navigation'
 import CursorTracker from '../../../components/CursorTracker'
@@ -9,48 +9,59 @@ import Lightbox from '../../../components/Lightbox'
 
 export async function generateStaticParams() {
   const works = await client.getAllByType('work_item')
-  
   return works.map((work) => ({
     uid: work.uid,
   }))
 }
 
 export default async function WorkPage({ params }) {
-  const { uid } = params
+  const allWorks = await client.getAllByType('work_item')
   
   try {
-    const work = await client.getByUID('work_item', uid)
-    const allWorks = await client.getAllByType('work_item')
+    const work = await client.getByUID('work_item', params.uid)
+    
+    const dimensions = work.data.dimensions && work.data.dimensions.length > 0 
+      ? asText(work.data.dimensions) 
+      : null
 
-    // Extract images from body slices
-    const galleryImages = []
-    if (work.data.body && Array.isArray(work.data.body)) {
-      work.data.body.forEach(slice => {
-        if (slice.slice_type === 'image' && slice.primary?.image) {
-          galleryImages.push(slice.primary.image)
+    const materials = work.data.materials && work.data.materials.length > 0
+      ? asText(work.data.materials)
+      : null
+
+    // Combine images and videos into a single gallery array
+    const galleryItems = []
+    
+    // Add images
+    if (work.data.gallery && work.data.gallery.length > 0) {
+      work.data.gallery.forEach((item, index) => {
+        if (item.image && item.image.url) {
+          galleryItems.push({
+            type: 'image',
+            data: item,
+            index: index
+          })
         }
       })
     }
 
-    // Also check for a gallery field (in case it exists)
-    if (work.data.gallery && Array.isArray(work.data.gallery)) {
-      galleryImages.push(...work.data.gallery)
+    // Add videos (if the field exists)
+    if (work.data.video_embed && work.data.video_embed.length > 0) {
+      work.data.video_embed.forEach((item, index) => {
+        if (item.embed_url) {
+          galleryItems.push({
+            type: 'video',
+            data: item,
+            index: index
+          })
+        }
+      })
     }
-
-    // Extract title from Rich Text field
-    const title = work.data.project_title 
-      ? asText(work.data.project_title)
-      : 'Untitled'
-
-    // Get the year from project_date
-    const year = work.data.project_date 
-      ? new Date(work.data.project_date).getFullYear()
-      : ''
 
     return (
       <>
         <Navigation shows={allWorks} works={allWorks} />
         <CursorTracker />
+        <Lightbox />
         
         <main className="main-content">
           <div className="project-view">
@@ -58,28 +69,89 @@ export default async function WorkPage({ params }) {
               ←
             </Link>
             
-            <h1 className="project-title">{title}</h1>
+            <h1 className="project-title">
+              {work.data.title ? asText(work.data.title) : 'Untitled'}
+            </h1>
             
             <div className="project-info">
-              {year && <>{year}</>}
-              <br /><br />
-              {work.data.intro_text && (
-                <PrismicRichText field={work.data.intro_text} />
+              {work.data.date && (
+                <>
+                  {new Date(work.data.date).getFullYear()}
+                  <br />
+                </>
+              )}
+              
+              {work.data.location && work.data.location.length > 0 && (
+                <>
+                  {asText(work.data.location)}
+                  <br />
+                </>
+              )}
+              
+              {dimensions && (
+                <>
+                  {dimensions}
+                  <br />
+                </>
+              )}
+              
+              {materials && (
+                <>
+                  {materials}
+                  <br />
+                </>
+              )}
+              
+              {work.data.description && work.data.description.length > 0 && (
+                <>
+                  <br />
+                  <PrismicRichText field={work.data.description} />
+                </>
               )}
             </div>
           </div>
 
-          {galleryImages.length > 0 && (
-            <Lightbox images={galleryImages} />
-          )}
-
-          {work.data.video_embed && work.data.video_embed.html && (
-            <div className="project-video" style={{ 
-              padding: '30px',
-              maxWidth: '1000px',
-              margin: '0 auto'
-            }}>
-              <div dangerouslySetInnerHTML={{ __html: work.data.video_embed.html }} />
+          {/* Gallery with Images AND Videos */}
+          {galleryItems.length > 0 && (
+            <div className="project-images">
+              {galleryItems.map((item, index) => (
+                <div key={index}>
+                  {item.type === 'image' ? (
+                    // IMAGE DISPLAY
+                    <>
+                      <div className="project-image">
+                        <PrismicNextImage
+                          field={item.data.image}
+                          className="gallery-item"
+                          data-index={index}
+                        />
+                      </div>
+                      {item.data.caption && item.data.caption.length > 0 && (
+                        <div className="image-caption">
+                          {asText(item.data.caption)}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    // VIDEO DISPLAY
+                    <>
+                      <div className="project-image video-container">
+                        <div 
+                          className="video-embed"
+                          dangerouslySetInnerHTML={{ 
+                            __html: item.data.html 
+                          }}
+                        />
+                      </div>
+                      {item.data.caption && item.data.caption.length > 0 && (
+                        <div className="image-caption">
+                          {asText(item.data.caption)}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </main>
