@@ -20,10 +20,11 @@ export default async function WorkPage({ params }) {
   try {
     const work = await client.getByUID('work_item', params.uid)
     
-let title = 'Untitled'
-if (work.data.intro_text && work.data.intro_text.length > 0) {
-  title = asText(work.data.intro_text)
-}
+    let title = 'Untitled'
+    if (work.data.intro_text && work.data.intro_text.length > 0) {
+      title = asText(work.data.intro_text)
+    }
+    
     const dimensions = work.data.dimensions && work.data.dimensions.length > 0 
       ? asText(work.data.dimensions) 
       : null
@@ -86,52 +87,48 @@ if (work.data.intro_text && work.data.intro_text.length > 0) {
             </div>
           </div>
 
-          {work.data.image && work.data.image.length > 0 && (
+          {work.data.body && work.data.body.length > 0 && (
             <div className="project-images">
-              {work.data.image.map((item, index) => (
-                <div key={index}>
-                  {item.image && item.image.url && (
-                    <>
+              {work.data.body.map((slice, index) => {
+                if (slice.slice_type === 'image' && slice.primary && slice.primary.image && slice.primary.image.url) {
+                  return (
+                    <div key={index}>
                       <div className="project-image">
                         <PrismicNextImage
-                          field={item.image}
+                          field={slice.primary.image}
                           className="gallery-item"
                           data-index={index}
                         />
                       </div>
-                      {item.caption && item.caption.length > 0 && (
+                      {slice.primary.caption && slice.primary.caption.length > 0 && (
                         <div className="image-caption">
-                          {asText(item.caption)}
+                          {asText(slice.primary.caption)}
                         </div>
                       )}
-                    </>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          {work.data.video && work.data.video.length > 0 && (
-            <div className="project-images">
-              {work.data.video.map((item, index) => (
-                <div key={index}>
-                  {item.embed_url && item.html && (
-                    <>
+                    </div>
+                  )
+                }
+                
+                if (slice.slice_type === 'video' && slice.primary && slice.primary.embed_url) {
+                  return (
+                    <div key={`video-${index}`}>
                       <div className="project-image video-container">
                         <div 
                           className="video-embed"
-                          dangerouslySetInnerHTML={{ __html: item.html }}
+                          dangerouslySetInnerHTML={{ __html: slice.primary.html }}
                         />
                       </div>
-                      {item.caption && item.caption.length > 0 && (
+                      {slice.primary.caption && slice.primary.caption.length > 0 && (
                         <div className="image-caption">
-                          {asText(item.caption)}
+                          {asText(slice.primary.caption)}
                         </div>
                       )}
-                    </>
-                  )}
-                </div>
-              ))}
+                    </div>
+                  )
+                }
+                
+                return null
+              })}
             </div>
           )}
         </main>
