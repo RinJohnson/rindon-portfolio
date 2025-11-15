@@ -97,4 +97,4 @@ export default function Navigation({ shows = [], works = [] }) {
     </nav>
   )
 }
- "Fix Prismic tag access in navigation"
+ "Fix Navigation syntax error" 
