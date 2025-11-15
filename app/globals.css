@@ -305,7 +305,7 @@ main {
 .project-images {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 28;
   margin: 0;
   padding: 0;
 }
@@ -327,10 +327,6 @@ main {
   height: auto;
   display: block;
   transition: transform 0.5s ease;
-}
-
-.project-image img:hover {
-  transform: scale(0.98);
 }
 
 .image-caption {
