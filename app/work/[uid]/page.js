@@ -20,7 +20,6 @@ export default async function WorkPage({ params }) {
   try {
     const work = await client.getByUID('work_item', params.uid)
     
-    // Get title from intro_text field (based on your Prismic structure)
     let title = 'Untitled'
     if (work.data.intro_text && work.data.intro_text.length > 0) {
       title = asText(work.data.intro_text)
@@ -88,11 +87,59 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
-          {/* Images */}
           {work.data.image && work.data.image.length > 0 && (
             <div className="project-images">
               {work.data.image.map((item, index) => (
                 <div key={index}>
                   {item.image && item.image.url && (
                     <>
-                      <div className="pr
+                      <div className="project-image">
+                        <PrismicNextImage
+                          field={item.image}
+                          className="gallery-item"
+                          data-index={index}
+                        />
+                      </div>
+                      {item.caption && item.caption.length > 0 && (
+                        <div className="image-caption">
+                          {asText(item.caption)}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {work.data.video && work.data.video.length > 0 && (
+            <div className="project-images">
+              {work.data.video.map((item, index) => (
+                <div key={index}>
+                  {item.embed_url && item.html && (
+                    <>
+                      <div className="project-image video-container">
+                        <div 
+                          className="video-embed"
+                          dangerouslySetInnerHTML={{ __html: item.html }}
+                        />
+                      </div>
+                      {item.caption && item.caption.length > 0 && (
+                        <div className="image-caption">
+                          {asText(item.caption)}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </main>
+      </>
+    )
+  } catch (error) {
+    console.error('Error loading work:', error)
+    notFound()
+  }
+}
