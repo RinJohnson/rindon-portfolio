@@ -1,0 +1,99 @@
+'use client'
+
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+
+export default function Navigation({ shows = [], works = [] }) {
+  const [activeDropdown, setActiveDropdown] = useState(null)
+  const navRef = useRef(null)
+
+  const toggleDropdown = (dropdownName) => {
+    setActiveDropdown(activeDropdown === dropdownName ? null : dropdownName)
+  }
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setActiveDropdown(null)
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [])
+
+  // Group works by tags
+  const worksByTag = {}
+  works.forEach(work => {
+    if (work.data.tags) {
+      work.data.tags.forEach(tag => {
+        if (!worksByTag[tag]) {
+          worksByTag[tag] = []
+        }
+        worksByTag[tag].push(work)
+      })
+    }
+  })
+
+  return (
+    <nav className="nav-horizontal" ref={navRef}>
+      <Link href="/" className="site-title">
+        Rindon Johnson
+      </Link>
+      
+      <div className="nav-content">
+        <div className={`dropdown ${activeDropdown === 'shows' ? 'active' : ''}`}>
+          <button 
+            className="dropdown-toggle" 
+            onClick={() => toggleDropdown('shows')}
+          >
+            Shows
+          </button>
+          <div className="dropdown-menu">
+            {shows.map((show) => (
+              <Link 
+                key={show.id} 
+                href={`/work/${show.uid}`}
+                onClick={() => setActiveDropdown(null)}
+              >
+                {show.data.title} {show.data.year && `(${show.data.year})`}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className={`dropdown ${activeDropdown === 'works' ? 'active' : ''}`}>
+          <button 
+            className="dropdown-toggle" 
+            onClick={() => toggleDropdown('works')}
+          >
+            Works
+          </button>
+          <div className="dropdown-menu">
+            {Object.keys(worksByTag).sort().map((tag) => {
+              const displayName = tag.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+              ).join(' ')
+              
+              return (
+                <Link 
+                  key={tag} 
+                  href={`/series/${tag}`}
+                  onClick={() => setActiveDropdown(null)}
+                >
+                  {displayName}
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+
+        <div className="nav-links"><Link href="/contact">Contact</Link></div>
+        <div className="nav-links"><Link href="/cv">CV</Link></div>
+        <div className="nav-links"><Link href="/news">News</Link></div>
+        <div className="nav-links"><Link href="/press">Press</Link></div>
+        <div className="nav-links"><Link href="/writing">Writing</Link></div>
+      </div>
+    </nav>
+  )
+}
