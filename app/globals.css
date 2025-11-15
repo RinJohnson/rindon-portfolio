@@ -305,7 +305,7 @@ main {
 .project-images {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 30px;
   margin: 0;
   padding: 0;
 }
@@ -316,8 +316,9 @@ main {
   min-height: 60vh;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #ffffff;
+justify-content: flex-start;
+background: #ffffff;
+padding-left: 30px;
 }
 
 .project-image img {
