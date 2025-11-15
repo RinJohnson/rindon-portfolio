@@ -33,9 +33,9 @@ export default async function Home() {
       <main className="main-content">
         <div className="landing-list">
           {works.map((work, index) => {
-            const title = work.data.intro_text && work.data.intro_text.length > 0
-              ? asText(work.data.intro_text)
-              : 'Untitled'
+const title = work.data.title && work.data.title.length > 0
+  ? asText(work.data.title)
+  : 'Untitled'
             
             const year = work.data.date 
               ? new Date(work.data.date).getFullYear()
