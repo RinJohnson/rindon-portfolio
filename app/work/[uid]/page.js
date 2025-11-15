@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { PrismicRichText } from '@prismicio/react'
 import { client } from '../../../prismicio'
 import Navigation from '../../../components/Navigation'
 import CursorTracker from '../../../components/CursorTracker'
@@ -20,8 +21,23 @@ export default async function WorkPage({ params }) {
     const work = await client.getByUID('work_item', uid)
     const allWorks = await client.getAllByType('work_item')
 
-    // Extract gallery images
-    const galleryImages = work.data.gallery || []
+    // Extract images from body slices
+    const galleryImages = []
+    if (work.data.body && Array.isArray(work.data.body)) {
+      work.data.body.forEach(slice => {
+        if (slice.slice_type === 'image' && slice.primary?.image) {
+          galleryImages.push(slice.primary.image)
+        }
+      })
+    }
+
+    // Also check for a gallery field (in case it exists)
+    if (work.data.gallery && Array.isArray(work.data.gallery)) {
+      galleryImages.push(...work.data.gallery)
+    }
+
+    // Get the year from project_date
+    const year = work.data.project_date ? new Date(work.data.project_date).getFullYear() : ''
 
     return (
       <>
@@ -34,14 +50,14 @@ export default async function WorkPage({ params }) {
               ←
             </Link>
             
-            <h1 className="project-title">{work.data.title}</h1>
+            <h1 className="project-title">{work.data.project_title || 'Untitled'}</h1>
             
             <div className="project-info">
-              {work.data.venue && <>{work.data.venue}</>}
-              {work.data.location && <>, {work.data.location}</>}
-              {work.data.year && <>, {work.data.year}</>}
+              {year && <>{year}</>}
               <br /><br />
-              {work.data.description && <>{work.data.description}</>}
+              {work.data.intro_text && (
+                <PrismicRichText field={work.data.intro_text} />
+              )}
             </div>
           </div>
 
