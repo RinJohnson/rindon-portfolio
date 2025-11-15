@@ -262,6 +262,7 @@ main {
 
 .landing-item:hover {
   border-width: 4px;
+  background: #ADD8E6 !important;
 }
 
 .landing-item-content {
