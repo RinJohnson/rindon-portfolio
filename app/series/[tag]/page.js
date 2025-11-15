@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { asText } from '@prismicio/client'
 import { client } from '../../../prismicio'
 import Navigation from '../../../components/Navigation'
 import CursorTracker from '../../../components/CursorTracker'
@@ -58,7 +59,13 @@ export default async function SeriesPage({ params }) {
 
         <div className="landing-list">
           {seriesWorks.map((work, index) => {
-            const year = work.data.project_date ? new Date(work.data.project_date).getFullYear() : ''
+            const title = work.data.project_title 
+              ? asText(work.data.project_title)
+              : 'Untitled'
+            const year = work.data.project_date 
+              ? new Date(work.data.project_date).getFullYear()
+              : ''
+
             return (
               <Link 
                 key={work.id}
@@ -70,7 +77,7 @@ export default async function SeriesPage({ params }) {
               >
                 <div className="landing-item-content">
                   <div className="landing-item-title">
-                    {work.data.project_title || 'Untitled'}
+                    {title}
                   </div>
                   <div className="landing-item-info">
                     {year}
