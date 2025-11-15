@@ -33,14 +33,17 @@ export default async function Home() {
       <main className="main-content">
         <div className="landing-list">
           {works.map((work, index) => {
-const title = work.data.intro_text && work.data.intro_text.length > 0
-  ? asText(work.data.intro_text)
-  : 'Untitled'
+            // Use project_title - this is the correct field!
+            const title = work.data.project_title && work.data.project_title.length > 0
+              ? asText(work.data.project_title)
+              : 'Untitled'
             
-            const year = work.data.date 
-              ? new Date(work.data.date).getFullYear()
+            // Get year from project_date
+            const year = work.data.project_date 
+              ? new Date(work.data.project_date).getFullYear()
               : ''
             
+            // Get location
             const location = work.data.location && work.data.location.length > 0
               ? asText(work.data.location)
               : ''
