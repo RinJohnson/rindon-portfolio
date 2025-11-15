@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { asText } from '@prismicio/client'
 import { client } from '../prismicio'
 import Navigation from '../components/Navigation'
 import CursorTracker from '../components/CursorTracker'
@@ -32,57 +33,31 @@ export default async function Home() {
       <main className="main-content">
         <div className="landing-list">
           {works.map((work, index) => {
-            // Safely get title
-            let title = 'Untitled'
-            try {
-              if (work.data?.project_title) {
-                const titleData = work.data.project_title
-                if (Array.isArray(titleData) && titleData.length > 0 && titleData[0].text) {
-                  title = titleData[0].text
-                } else if (typeof titleData === 'string') {
-                  title = titleData
-                }
-              }
-            } catch (e) {
-              console.error('Error getting title:', e)
-            }
+            // Extract title from Rich Text field
+            const title = work.data.project_title 
+              ? asText(work.data.project_title)
+              : 'Untitled'
             
-            // Safely get year
-            let year = ''
-            try {
-              if (work.data?.project_date) {
-                year = new Date(work.data.project_date).getFullYear().toString()
-              }
-            } catch (e) {
-              console.error('Error getting year:', e)
-            }
-            
-            // Safely get location
-            let location = ''
-            try {
-              if (work.data?.location) {
-                const locationData = work.data.location
-                if (Array.isArray(locationData) && locationData.length > 0 && locationData[0].text) {
-                  location = locationData[0].text
-                } else if (typeof locationData === 'string') {
-                  location = locationData
-                }
-              }
-            } catch (e) {
-              console.error('Error getting location:', e)
-            }
+            // Extract year from date
+            const year = work.data.project_date 
+              ? new Date(work.data.project_date).getFullYear()
+              : ''
 
             return (
               <Link 
                 key={work.id}
-                href={`/work/${work.uid}`}
+                href={`/work/${work.uid}`} 
                 className="landing-item"
-                style={{ background: gradientColors[index % gradientColors.length] }}
+                style={{ 
+                  background: gradientColors[index % gradientColors.length] 
+                }}
               >
                 <div className="landing-item-content">
-                  <div className="landing-item-title">{title}</div>
+                  <div className="landing-item-title">
+                    {title}
+                  </div>
                   <div className="landing-item-info">
-                    {location && year ? `${location} / ${year}` : location || year}
+                    {year}
                   </div>
                 </div>
               </Link>
