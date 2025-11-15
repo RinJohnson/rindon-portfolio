@@ -17,7 +17,7 @@ export async function generateStaticParams() {
   const allWorks = await client.getAllByType('work_item')
   const tags = new Set()
   
-allWorks.forEach(work => {
+  allWorks.forEach(work => {
     if (work.tags && Array.isArray(work.tags)) {
       work.tags.forEach(tag => tags.add(tag))
     }
@@ -26,13 +26,14 @@ allWorks.forEach(work => {
   return Array.from(tags).map((tag) => ({
     tag: String(tag),
   }))
+}
 
 export default async function SeriesPage({ params }) {
   const { tag } = params
   const allWorks = await client.getAllByType('work_item')
   
   // Filter works by tag
- const seriesWorks = allWorks.filter(work => 
+  const seriesWorks = allWorks.filter(work => 
     work.tags && Array.isArray(work.tags) && work.tags.includes(tag)
   )
 
@@ -43,43 +44,5 @@ export default async function SeriesPage({ params }) {
 
   return (
     <>
-      <Navigation shows={allWorks} works={allWorks} />
-      <CursorTracker />
-      
-      <main className="main-content">
-        <div className="project-view">
-          <Link href="/" className="back-link">
-            ←
-          </Link>
-          
-          <h1 className="project-title">{displayName}</h1>
-        </div>
-
-        <div className="landing-list">
-          {seriesWorks.map((work, index) => (
-            <Link 
-              key={work.id}
-              href={`/work/${work.uid}`} 
-              className="landing-item"
-              style={{ 
-                background: grayColors[index % grayColors.length] 
-              }}
-            >
-              <div className="landing-item-content">
-                <div className="landing-item-title">
-                  {work.data.title}
-                </div>
-                <div className="landing-item-info">
-                  {work.data.venue && `${work.data.venue}`}
-                  {work.data.location && `, ${work.data.location}`}
-                  {work.data.year && ` / ${work.data.year}`}
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </main>
-    </>
-  )
-}
-"Fix Prismic tag access in series page"
+      <Navigation shows={all
+                          "Fix series page syntax error" 
