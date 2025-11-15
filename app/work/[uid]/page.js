@@ -20,14 +20,20 @@ export default async function WorkPage({ params }) {
   try {
     const work = await client.getByUID('work_item', params.uid)
     
-    // Get title - handle both string and rich text formats
+    // DEBUG: Let's see what fields exist
+    console.log('Work data fields:', Object.keys(work.data))
+    console.log('Full work data:', work.data)
+    
+    // Try multiple possible title fields
     let title = 'Untitled'
-    if (work.data.title) {
-      if (typeof work.data.title === 'string') {
-        title = work.data.title
-      } else if (Array.isArray(work.data.title)) {
-        title = asText(work.data.title)
-      }
+    if (work.data.title && work.data.title.length > 0) {
+      title = asText(work.data.title)
+    } else if (work.data.intro_text && work.data.intro_text.length > 0) {
+      title = asText(work.data.intro_text)
+    } else if (work.data.name && work.data.name.length > 0) {
+      title = asText(work.data.name)
+    } else if (work.data.work_title && work.data.work_title.length > 0) {
+      title = asText(work.data.work_title)
     }
     
     const dimensions = work.data.dimensions && work.data.dimensions.length > 0 
@@ -51,6 +57,12 @@ export default async function WorkPage({ params }) {
             </Link>
             
             <h1 className="project-title">{title}</h1>
+            
+            {/* DEBUG INFO - Remove this later */}
+            <div style={{ background: '#ffe0e0', padding: '10px', marginBottom: '20px', fontSize: '12px' }}>
+              <strong>Debug Info (remove later):</strong><br />
+              Available fields: {Object.keys(work.data).join(', ')}
+            </div>
             
             <div className="project-info">
               {work.data.date && (
@@ -114,7 +126,7 @@ export default async function WorkPage({ params }) {
             </div>
           )}
 
-          {/* Videos (if field exists) */}
+          {/* Videos */}
           {work.data.video_embed && work.data.video_embed.length > 0 && (
             <div className="project-images">
               {work.data.video_embed.map((item, index) => (
@@ -128,11 +140,6 @@ export default async function WorkPage({ params }) {
                         }}
                       />
                     </div>
-                    {item.caption && item.caption.length > 0 && (
-                      <div className="image-caption">
-                        {asText(item.caption)}
-                      </div>
-                    )}
                   </div>
                 )
               ))}
