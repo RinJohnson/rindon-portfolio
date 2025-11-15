@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { asText } from '@prismicio/client'
-import { PrismicRichText, PrismicNextImage } from '@prismicio/react'
+import { PrismicRichText } from '@prismicio/react'
 import { client } from '../../../prismicio'
 import Navigation from '../../../components/Navigation'
 import CursorTracker from '../../../components/CursorTracker'
@@ -19,7 +20,7 @@ export default async function WorkPage({ params }) {
     const work = await client.getByUID('work_item', uid)
     const allWorks = await client.getAllByType('work_item')
 
-    // Extract ONLY images for the Lightbox
+    // Extract images for the Lightbox
     const galleryImages = []
     if (work.data.body && Array.isArray(work.data.body)) {
       work.data.body.forEach(slice => {
@@ -37,12 +38,12 @@ export default async function WorkPage({ params }) {
       ? new Date(work.data.project_date).getFullYear()
       : ''
 
-    // Pre-process slices to filter out any that would cause issues
+    // Pre-filter valid slices
     const validSlices = work.data.body && Array.isArray(work.data.body)
       ? work.data.body.filter(slice => {
           if (!slice || !slice.slice_type) return false
           if (slice.slice_type === 'image' && slice.primary?.image?.url) return true
-          if (slice.slice_type === 'video' && slice.primary?.embed_url) return true
+          if (slice.slice_type === 'video' && slice.primary?.embed_url && slice.primary?.html) return true
           if (slice.slice_type === 'text' && slice.primary?.text && Array.isArray(slice.primary.text) && slice.primary.text.length > 0) return true
           return false
         })
@@ -67,7 +68,7 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
-          {/* Render ALL valid body slices in order (images, videos, text) */}
+          {/* Render ALL valid body slices in order */}
           {validSlices.length > 0 && (
             <div className="project-images">
               {validSlices.map((slice, index) => {
@@ -80,10 +81,16 @@ export default async function WorkPage({ params }) {
                   return (
                     <div key={`image-${slice.id || index}`}>
                       <div className="project-image">
-                        <PrismicNextImage
-                          field={slice.primary.image}
+                        <img
+                          src={slice.primary.image.url}
+                          alt={slice.primary.image.alt || caption || title}
                           className="gallery-item"
                           data-index={index}
+                          style={{
+                            width: '100%',
+                            height: 'auto',
+                            display: 'block'
+                          }}
                         />
                       </div>
                       {caption && (
@@ -102,12 +109,10 @@ export default async function WorkPage({ params }) {
                   return (
                     <div key={`video-${slice.id || index}`}>
                       <div className="project-image video-container">
-                        {slice.primary.html && (
-                          <div 
-                            className="video-embed"
-                            dangerouslySetInnerHTML={{ __html: slice.primary.html }}
-                          />
-                        )}
+                        <div 
+                          className="video-embed"
+                          dangerouslySetInnerHTML={{ __html: slice.primary.html }}
+                        />
                       </div>
                       {caption && (
                         <div className="image-caption">{caption}</div>
@@ -131,7 +136,6 @@ export default async function WorkPage({ params }) {
                   )
                 }
                 
-                // This should never happen because we filtered, but just in case
                 return null
               })}
             </div>
