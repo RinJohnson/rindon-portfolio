@@ -37,7 +37,6 @@ body {
   display: block;
 }
 
-/* FIX: Remove any default spacing that could cause white rectangle */
 main {
   margin: 0;
   padding: 0;
@@ -148,7 +147,6 @@ nav {
   background: #ffffff;
   padding: 10px;
   min-width: 350px;
-  /* Triple hide: display, visibility, and max-height */
   display: none;
   visibility: hidden;
   max-height: 0;
@@ -204,12 +202,6 @@ nav {
 
 .nav-links a:focus {
   outline: none;
-}
-
-main {
-  display: block;
-  margin: 0;
-  padding: 0;
 }
 
 .main-content {
@@ -303,50 +295,39 @@ main {
   max-width: 600px;
 }
 
-.project-images {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  margin: 0;
-  padding: 0;
+.project-info p,
+.project-info h1,
+.project-info h2,
+.project-info h3,
+.project-info h4,
+.project-info h5,
+.project-info h6,
+.project-info li,
+.project-info span,
+.project-info div {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  line-height: 1.6 !important;
 }
 
-/* Images - align with videos, left-aligned with padding */
-.project-image {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background: #ffffff;
-  padding: 0 30px;
-  margin-bottom: 0;
+.project-info strong {
+  font-weight: 400 !important;
 }
 
-.project-image img {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
+.project-info em {
+  font-style: italic;
 }
 
-.project-image img {
-  max-width: 100%;
-  max-height: 90vh;
-  width: auto;
-  height: auto;
-  display: block;
-  transition: transform 0.5s ease;
-}
-
-/* Image captions - constrained width, left-aligned with padding */
-.image-caption {
-  font-size: 14px;
-  color: var(--text-color);
-  opacity: 0.7;
-  padding: 15px 30px 30px 30px;
-  max-width: 600px;
-  margin-bottom: 30px;
+.project-info [class*="RichText"] p,
+.project-info [class*="RichText"] h1,
+.project-info [class*="RichText"] h2,
+.project-info [class*="RichText"] h3,
+.project-info [class*="RichText"] h4,
+.project-info [class*="RichText"] h5,
+.project-info [class*="RichText"] h6 {
+  font-size: 14px !important;
+  font-weight: 300 !important;
+  line-height: 1.6 !important;
 }
 
 .back-link {
@@ -432,28 +413,97 @@ main {
   max-height: 90%;
 }
 
-.lightbox-content img {
+/* ========================================
+   WORK PAGE CONTENT - ALIGNED AT 30PX
+   ======================================== */
+
+/* Container for all work content */
+.project-content {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.project-images {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+/* Images - full bleed, 30px from left edge */
+.project-image {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding-left: 30px;
+  padding-right: 30px;
+  background: #ffffff;
+}
+
+.project-image img {
   max-width: 100%;
-  max-height: 100%;
+  height: auto;
+  display: block;
   object-fit: contain;
 }
 
-@media (max-width: 768px) {
-  * { cursor: auto; }
-  body::after { display: none; }
-  .nav-content {
-    flex-direction: column;
-    gap: 15px;
-    align-items: flex-start;
-  }
-  .landing-item {
-    min-height: 120px;
-    padding: 25px 20px;
-  }
+/* Image captions - max 600px wide, 30px from left */
+.image-caption {
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.7;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 15px;
+  max-width: 600px;
 }
+
+/* Videos - SAME structure as images for alignment */
+.project-video-container {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding-left: 30px;
+  padding-right: 30px;
+  background: #ffffff;
+}
+
+.video-responsive {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.video-responsive iframe,
+.video-responsive object,
+.video-responsive embed,
+.video-responsive video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}
+
+/* Text blocks - max 600px wide, 30px from left */
+.project-text-block {
+  max-width: 600px;
+  padding-left: 30px;
+  padding-right: 30px;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 /* ========================================
-   PRESS TEXT SIZE FIX
+   PRESS PAGE
    ======================================== */
+
 .press-text p,
 .press-text h1,
 .press-text h2,
@@ -473,412 +523,34 @@ main {
 }
 
 /* ========================================
-   VIDEO EMBED STYLING
+   MOBILE RESPONSIVE
    ======================================== */
-.video-container {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background: #ffffff;
-  padding-left: 30px;
-  padding-right: 30px;
-}
 
-.video-embed {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0;
-  overflow: hidden;
-}
-
-.video-embed iframe,
-.video-embed object,
-.video-embed embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Responsive video */
 @media (max-width: 768px) {
-  .video-container {
+  * { 
+    cursor: auto; 
+  }
+  
+  body::after { 
+    display: none; 
+  }
+  
+  .nav-content {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .landing-item {
+    min-height: 120px;
+    padding: 25px 20px;
+  }
+  
+  .project-image,
+  .project-video-container,
+  .image-caption,
+  .project-text-block {
     padding-left: 15px;
     padding-right: 15px;
-  }
-}
-
-/* Force uniform text sizing across all pages */
-.project-info p,
-.project-info h1,
-.project-info h2,
-.project-info h3,
-.project-info h4,
-.project-info h5,
-.project-info h6,
-.project-info li,
-.project-info span,
-.project-info div {
-  font-size: 14px !important;
-  font-weight: 300 !important;
-  line-height: 1.6 !important;
-}
-
-.project-info strong {
-  font-weight: 400 !important;
-}
-
-.project-info em {
-  font-style: italic;
-}
-
-/* Ensure rich text content is uniform */
-.project-info [class*="RichText"] p,
-.project-info [class*="RichText"] h1,
-.project-info [class*="RichText"] h2,
-.project-info [class*="RichText"] h3,
-.project-info [class*="RichText"] h4,
-.project-info [class*="RichText"] h5,
-.project-info [class*="RichText"] h6 {
-  font-size: 14px !important;
-  font-weight: 300 !important;
-  line-height: 1.6 !important;
-}
-/* Video embeds - Vimeo/YouTube */
-.project-video-container {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  background: #ffffff;
-  padding: 30px;
-  margin-bottom: 0;
-}
-
-.video-responsive {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-bottom: 56.25%;
-  height: 0;
-  overflow: hidden;
-  background: #000;
-}
-
-.video-responsive iframe,
-.video-responsive object,
-.video-responsive embed,
-.video-responsive video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  border: 0;
-}
-
-/* Image captions - constrained width like intro text */
-.image-caption {
-  font-size: 14px;
-  color: var(--text-color);
-  opacity: 0.7;
-  margin: 15px 30px 60px 30px;
-  max-width: 600px;
-}
-
-/* Text blocks - left-aligned with same padding as images/videos */
-.project-text-block {
-  max-width: 600px;
-  padding: 0 30px;
-  margin: 40px 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* Make sure images don't stretch */
-.project-image img {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .project-video-container {
-    padding: 15px;
-  }
-  
-  .video-responsive {
-    max-width: 100%;
-  }
-  
-  .image-caption {
-    margin: 15px 15px 40px 15px;
-  }
-  
-  .project-text-block {
-    margin: 30px 15px;
-  }
-}
-/* ========================================
-   IMAGES, VIDEOS, TEXT - ALL ALIGNED
-   ======================================== */
-
-/* Images - left-aligned with 30px padding */
-.project-image {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  background: #ffffff;
-  padding: 0 30px;
-  margin-bottom: 0;
-}
-
-.project-image img {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-/* Image captions - constrained width, with spacing */
-.image-caption {
-  font-size: 14px;
-  color: var(--text-color);
-  opacity: 0.7;
-  padding: 15px 30px 30px 30px;
-  max-width: 600px;
-  margin-bottom: 30px;
-}
-
-/* Video container - left-aligned with 30px padding */
-.project-video-container {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  background: #ffffff;
-  padding: 30px;
-  margin-bottom: 0;
-}
-
-.video-responsive {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-bottom: 56.25%;
-  height: 0;
-  overflow: hidden;
-  background: #000;
-}
-
-.video-responsive iframe,
-.video-responsive object,
-.video-responsive embed,
-.video-responsive video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  border: 0;
-}
-
-/* Text blocks - left-aligned with same padding */
-.project-text-block {
-  max-width: 600px;
-  padding: 0 30px;
-  margin: 40px 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* Mobile adjustments */
-@media (max-width: 768px) {
-  .project-image {
-    padding: 0 15px;
-  }
-  
-  .project-video-container {
-    padding: 15px;
-  }
-  
-  .video-responsive {
-    max-width: 100%;
-  }
-  
-  .image-caption {
-    padding: 15px 15px 30px 15px;
-    margin-bottom: 20px;
-  }
-  
-  .project-text-block {
-    padding: 0 15px;
-    margin: 30px 0;
-  }
-}
-/* FINAL ALIGNMENT FIX */
-.project-image {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0 30px;
-  margin-bottom: 0;
-}
-
-.project-image img {
-  max-width: 100%;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.image-caption {
-  font-size: 14px;
-  color: var(--text-color);
-  opacity: 0.7;
-  padding: 15px 30px 30px 30px;
-  max-width: 600px;
-  margin-bottom: 30px;
-}
-
-.project-text-block {
-  max-width: 600px;
-  padding: 0 30px;
-  margin: 40px 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
-/* FORCED ALIGNMENT - WILL OVERRIDE EVERYTHING */
-.project-image {
-  width: 100vw !important;
-  margin-left: calc(-50vw + 50%) !important;
-  display: flex !important;
-  justify-content: flex-start !important;
-  padding: 0 30px !important;
-  margin-bottom: 0 !important;
-}
-
-.project-image img {
-  max-width: 100% !important;
-  height: auto !important;
-  object-fit: contain !important;
-  display: block !important;
-}
-
-.image-caption {
-  padding: 15px 30px 30px 30px !important;
-  max-width: 600px !important;
-  margin-bottom: 30px !important;
-}
-
-.project-text-block {
-  padding: 0 30px !important;
-  margin: 40px 0 !important;
-  max-width: 600px !important;
-}
-
-/* ===================================
-   WORK PAGE CONTENT - PROPER ALIGNMENT
-   =================================== */
-
-/* Container for all content */
-.project-content {
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-/* Images - full bleed with 30px left padding */
-.project-image {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  padding: 0 30px;
-  margin-bottom: 0;
-  background: #ffffff;
-}
-
-.project-image img {
-  max-width: 100%;
-  height: auto;
-  display: block;
-  object-fit: contain;
-}
-
-/* Image captions - 600px max width, 30px padding */
-.image-caption {
-  font-size: 14px;
-  color: var(--text-color);
-  opacity: 0.7;
-  padding: 15px 30px 0 30px;
-  max-width: 600px;
-  margin-bottom: 0;
-}
-
-/* Video container - full bleed with 30px padding */
-.project-video-container {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  padding: 0 30px;
-  margin-bottom: 0;
-  background: #ffffff;
-}
-
-.video-responsive {
-  position: relative;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
-  height: 0;
-  overflow: hidden;
-  background: #000;
-}
-
-.video-responsive iframe,
-.video-responsive object,
-.video-responsive embed,
-.video-responsive video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  border: 0;
-}
-
-/* Text blocks - 600px max width, 30px padding */
-.project-text-block {
-  max-width: 600px;
-  padding: 0 30px;
-  margin: 0 0 0 0;
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-/* Mobile responsive */
-@media (max-width: 768px) {
-  .project-image {
-    padding: 0 15px;
-  }
-  
-  .project-video-container {
-    padding: 0 15px;
-  }
-  
-  .image-caption {
-    padding: 15px 15px 0 15px;
-  }
-  
-  .project-text-block {
-    padding: 0 15px;
   }
 }
