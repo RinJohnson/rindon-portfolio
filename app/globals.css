@@ -785,3 +785,100 @@ main {
   margin: 40px 0 !important;
   max-width: 600px !important;
 }
+
+/* ===================================
+   WORK PAGE CONTENT - PROPER ALIGNMENT
+   =================================== */
+
+/* Container for all content */
+.project-content {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+/* Images - full bleed with 30px left padding */
+.project-image {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 0 30px;
+  margin-bottom: 0;
+  background: #ffffff;
+}
+
+.project-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Image captions - 600px max width, 30px padding */
+.image-caption {
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.7;
+  padding: 15px 30px 0 30px;
+  max-width: 600px;
+  margin-bottom: 0;
+}
+
+/* Video container - full bleed with 30px padding */
+.project-video-container {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  padding: 0 30px;
+  margin-bottom: 0;
+  background: #ffffff;
+}
+
+.video-responsive {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+.video-responsive iframe,
+.video-responsive object,
+.video-responsive embed,
+.video-responsive video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+}
+
+/* Text blocks - 600px max width, 30px padding */
+.project-text-block {
+  max-width: 600px;
+  padding: 0 30px;
+  margin: 0 0 0 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .project-image {
+    padding: 0 15px;
+  }
+  
+  .project-video-container {
+    padding: 0 15px;
+  }
+  
+  .image-caption {
+    padding: 15px 15px 0 15px;
+  }
+  
+  .project-text-block {
+    padding: 0 15px;
+  }
+}
