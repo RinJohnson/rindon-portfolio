@@ -311,15 +311,23 @@ main {
   padding: 0;
 }
 
+/* Images - align with videos, left-aligned with padding */
 .project-image {
   width: 100vw;
   margin-left: calc(-50vw + 50%);
-  min-height: 60vh;
   display: flex;
   align-items: center;
-justify-content: flex-start;
-background: #ffffff;
-padding-left: 30px;
+  justify-content: flex-start;
+  background: #ffffff;
+  padding: 0 30px;
+  margin-bottom: 0;
+}
+
+.project-image img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .project-image img {
@@ -331,11 +339,14 @@ padding-left: 30px;
   transition: transform 0.5s ease;
 }
 
+/* Image captions - constrained width, left-aligned with padding */
 .image-caption {
   font-size: 14px;
   color: var(--text-color);
   opacity: 0.7;
-  margin: 15px 30px 60px 30px;
+  padding: 15px 30px 30px 30px;
+  max-width: 600px;
+  margin-bottom: 30px;
 }
 
 .back-link {
@@ -579,11 +590,11 @@ padding-left: 30px;
   max-width: 600px;
 }
 
-/* Text blocks between media - restore padding */
+/* Text blocks - left-aligned with same padding as images/videos */
 .project-text-block {
   max-width: 600px;
-  margin: 40px 30px;
-  padding: 0;
+  padding: 0 30px;
+  margin: 40px 0;
   font-size: 14px;
   line-height: 1.6;
 }
