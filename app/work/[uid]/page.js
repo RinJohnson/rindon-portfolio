@@ -5,7 +5,6 @@ import { PrismicRichText } from '@prismicio/react'
 import { client } from '../../../prismicio'
 import Navigation from '../../../components/Navigation'
 import CursorTracker from '../../../components/CursorTracker'
-import Lightbox from '../../../components/Lightbox'
 
 export async function generateStaticParams() {
   const works = await client.getAllByType('work_item')
@@ -18,16 +17,6 @@ export default async function WorkPage({ params }) {
   try {
     const work = await client.getByUID('work_item', uid)
     const allWorks = await client.getAllByType('work_item')
-
-    // Extract images for Lightbox
-    const galleryImages = []
-    if (work.data.body && Array.isArray(work.data.body)) {
-      work.data.body.forEach(slice => {
-        if (slice.slice_type === 'image' && slice.primary?.image?.url) {
-          galleryImages.push(slice.primary.image)
-        }
-      })
-    }
 
     const title = work.data.project_title 
       ? asText(work.data.project_title)
@@ -56,12 +45,12 @@ export default async function WorkPage({ params }) {
             </div>
           </div>
 
-          {/* Render body slices in order */}
+          {/* Render body slices - images stay large and beautiful! */}
           {work.data.body && Array.isArray(work.data.body) && work.data.body.length > 0 && (
             <div className="project-content">
               {work.data.body.map((slice, index) => {
                 
-                // IMAGE SLICES - with spacing
+                // IMAGE SLICES - keeping them large like they are now!
                 if (slice.slice_type === 'image' && slice.primary?.image?.url) {
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
                     ? asText(slice.primary.caption)
@@ -73,8 +62,6 @@ export default async function WorkPage({ params }) {
                         <img
                           src={slice.primary.image.url}
                           alt={slice.primary.image.alt || caption || ''}
-                          className="gallery-item"
-                          data-index={index}
                           style={{ 
                             maxWidth: '100%', 
                             height: 'auto',
@@ -89,7 +76,7 @@ export default async function WorkPage({ params }) {
                   )
                 }
                 
-                // VIDEO SLICES - with correct embed path
+                // VIDEO SLICES
                 if (slice.slice_type === 'video' && slice.primary?.embed) {
                   const embedHtml = slice.primary.embed.html
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
@@ -127,8 +114,7 @@ export default async function WorkPage({ params }) {
             </div>
           )}
 
-          {/* Lightbox for click-to-enlarge */}
-          {galleryImages.length > 0 && <Lightbox images={galleryImages} />}
+          {/* REMOVED: <Lightbox images={galleryImages} /> - this was causing duplicates! */}
         </main>
       </>
     )
