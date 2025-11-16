@@ -723,3 +723,37 @@ main {
     margin: 30px 0;
   }
 }
+/* FINAL ALIGNMENT FIX */
+.project-image {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 30px;
+  margin-bottom: 0;
+}
+
+.project-image img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.image-caption {
+  font-size: 14px;
+  color: var(--text-color);
+  opacity: 0.7;
+  padding: 15px 30px 30px 30px;
+  max-width: 600px;
+  margin-bottom: 30px;
+}
+
+.project-text-block {
+  max-width: 600px;
+  padding: 0 30px;
+  margin: 40px 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
