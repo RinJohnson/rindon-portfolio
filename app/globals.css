@@ -757,3 +757,31 @@ main {
   font-size: 14px;
   line-height: 1.6;
 }
+/* FORCED ALIGNMENT - WILL OVERRIDE EVERYTHING */
+.project-image {
+  width: 100vw !important;
+  margin-left: calc(-50vw + 50%) !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  padding: 0 30px !important;
+  margin-bottom: 0 !important;
+}
+
+.project-image img {
+  max-width: 100% !important;
+  height: auto !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+.image-caption {
+  padding: 15px 30px 30px 30px !important;
+  max-width: 600px !important;
+  margin-bottom: 30px !important;
+}
+
+.project-text-block {
+  padding: 0 30px !important;
+  margin: 40px 0 !important;
+  max-width: 600px !important;
+}
