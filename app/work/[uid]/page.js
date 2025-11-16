@@ -62,12 +62,6 @@ export default async function WorkPage({ params }) {
                         <img
                           src={slice.primary.image.url}
                           alt={slice.primary.image.alt || caption || ''}
-                          style={{
-                            maxWidth: '100%',
-                            height: 'auto',
-                            objectFit: 'contain',
-                            display: 'block'
-                          }}
                         />
                       </div>
                       {caption && (
@@ -77,13 +71,12 @@ export default async function WorkPage({ params }) {
                   )
                 }
                 
-                // VIDEO SLICES - The embed is in slice.primary.embed.html
+                // VIDEO SLICES
                 if (slice.slice_type === 'video' && slice.primary?.embed) {
                   const caption = slice.primary?.caption && Array.isArray(slice.primary.caption) && slice.primary.caption.length > 0
                     ? asText(slice.primary.caption)
                     : ''
                   
-                  // The embed field contains: { html, embed_url, provider_name, etc }
                   const embedHtml = slice.primary.embed.html
                   
                   if (embedHtml) {
