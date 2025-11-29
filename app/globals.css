@@ -554,3 +554,19 @@ nav {
     padding-right: 15px;
   }
 }
+/* PARAGRAPH SPACING */
+.project-info p {
+  margin-bottom: 1em;
+}
+
+.project-info p:last-child {
+  margin-bottom: 0;
+}
+
+.project-text-block p {
+  margin-bottom: 1em;
+}
+
+.project-text-block p:last-child {
+  margin-bottom: 0;
+}
