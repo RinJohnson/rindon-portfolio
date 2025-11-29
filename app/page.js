@@ -5,16 +5,16 @@ import Navigation from '../components/Navigation'
 import CursorTracker from '../components/CursorTracker'
 
 const gradientColors = [
-  '#c8c8c8',
-  '#b8b8b8',
-  '#a8a8a8',
-  '#989898',
-  '#888888',
-  '#787878',
-  '#686868',
-  '#585858',
-  '#484848',
-  '#383838',
+  '#FAF8F5',  // Light cream
+  '#F5F0E8',  // Cream
+  '#EBE3D6',  // Warm cream
+  '#E0D4C4',  // Light tan
+  '#D4C4B0',  // Soft tan
+  '#C8B49C',  // Light brown
+  '#B89F82',  // Warm tan
+  '#A68A6A',  // Medium brown
+  '#8B7355',  // Warm brown
+  '#6B5344',  // Deep brown
 ]
 
 export default async function Home() {
