@@ -99,7 +99,7 @@ export default function Navigation({ shows = [], works = [] }) {
         </div>
 
         <div className="nav-links"><Link href="/contact">Contact</Link></div>
-        <div className="nav-links"><Link href="/cv">CV</Link></div>
+        <div className="nav-links"><Link href="/cv">About/CV</Link></div>
         <div className="nav-links"><Link href="/news">News</Link></div>
         <div className="nav-links"><Link href="/press">Press</Link></div>
         <div className="nav-links"><Link href="/writing">Writing</Link></div>
