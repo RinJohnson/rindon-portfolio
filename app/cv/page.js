@@ -17,7 +17,7 @@ export default async function CVPage() {
             ←
           </Link>
           
-          <h1 className="project-title">CV</h1>
+          <h1 className="project-title">About/CV</h1>
           
           <div className="project-info">
             <p>
