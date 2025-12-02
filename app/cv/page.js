@@ -1,10 +1,19 @@
 import Link from 'next/link'
+import { PrismicRichText } from '@prismicio/react'
 import { client } from '../../prismicio'
 import Navigation from '../../components/Navigation'
 import CursorTracker from '../../components/CursorTracker'
 
-export default async function CVPage() {
+export default async function AboutPage() {
   const allWorks = await client.getAllByType('work_item')
+  
+  // Fetch about content from Prismic
+  let about = null
+  try {
+    about = await client.getSingle('about')
+  } catch (error) {
+    console.log('About page not set up in Prismic yet')
+  }
 
   return (
     <>
@@ -19,16 +28,26 @@ export default async function CVPage() {
           
           <h1 className="project-title">About/CV</h1>
           
-          <div className="project-info">
-            <p>
-              <a 
-                href="https://www.dropbox.com/scl/fi/7gszaelfhz39p7nscdocm/Johnson-CV-Works-Links.pdf?rlkey=qrfdfaypbp7hhqt1dno8az4pl&st=ilarwwb2&dl=0"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Download CV (PDF)
-              </a>
-            </p>
+          <div className="project-info" style={{ maxWidth: '800px' }}>
+            {about ? (
+              <>
+                {/* Bio Section */}
+                {about.data.bio && about.data.bio.length > 0 && (
+                  <div style={{ marginBottom: '40px' }}>
+                    <PrismicRichText field={about.data.bio} />
+                  </div>
+                )}
+                
+                {/* CV Section */}
+                {about.data.cv_content && about.data.cv_content.length > 0 && (
+                  <div>
+                    <PrismicRichText field={about.data.cv_content} />
+                  </div>
+                )}
+              </>
+            ) : (
+              <p>About content coming soon.</p>
+            )}
           </div>
         </div>
       </main>
